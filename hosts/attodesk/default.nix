@@ -1,8 +1,10 @@
 { inputs, ... }:
 {
   imports = [
-    ./hardware-configuration.nix
     inputs.aagl.nixosModules.default
+
+    ./hardware-configuration.nix
+    ./mounts.nix
 
     ../../modules/nixos/core/nix.nix
     ../../modules/nixos/core/locale.nix
