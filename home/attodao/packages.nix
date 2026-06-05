@@ -2,11 +2,11 @@
 {
   home.packages = with pkgs; [
     app2unit
+    cloudflared
     kdePackages.ark
-    floorp-bin
-    kdePackages.dolphin
     nil
     nixd
+    pcmanfm
     protonup-qt
     qt6Packages.qt6ct
     quickshell

@@ -19,9 +19,12 @@
         showLauncherIcon = true;
         launcherPosition = "start";
         launcherUseDistroLogo = true;
+        groupApps = true;
+        groupClickAction = "cycle";
+        groupIndicatorStyle = "dots";
         pinnedApps = [
           "Foot Client"
-          "Dolphin"
+          "PCManFM"
           "Zed"
           "Floorp"
           "An Anime Game Launcher"
@@ -40,7 +43,19 @@
         useFahrenheit = false;
       };
 
-      colorSchemes.predefinedScheme = "Gruvbox";
+      nightLight = {
+        enabled = true;
+        forced = true;
+        autoSchedule = false;
+        nightTemp = "4000";
+        dayTemp = "6500";
+      };
+
+      colorSchemes = {
+        predefinedScheme = "Gruvbox";
+        darkMode = true;
+        schedulingMode = "off";
+      };
     };
   };
 }

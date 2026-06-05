@@ -20,6 +20,7 @@
     ../../modules/nixos/boot/limine.nix
 
     ../../modules/nixos/desktop/greeter.nix
+    ../../modules/nixos/desktop/gtk.nix
     ../../modules/nixos/desktop/niri.nix
 
     ../../modules/nixos/fonts.nix

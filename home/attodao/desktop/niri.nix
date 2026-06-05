@@ -23,7 +23,7 @@ in
     binds = with config.lib.niri.actions; {
       # アプリ起動
       "Mod+Return".action = spawn "footclient";
-      "Mod+E".action = spawn "dolphin";
+      "Mod+E".action = spawn "pcmanfm";
 
       # Noctalia コア
       "Mod+Space".action.spawn = noctalia "launcher toggle";
