@@ -7,17 +7,8 @@
 
 let
   greeterNiriConfig = pkgs.writeText "niri-greeter.kdl" ''
-    input {
-        keyboard {
-            xkb {
-                layout "us"
-            }
-        }
-
-        touchpad {
-            tap
-            natural-scroll
-        }
+    hotkey-overlay {
+        skip-at-startup
     }
 
     output "DP-1" {
