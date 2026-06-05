@@ -1,15 +1,49 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
+let
+  greeterNiriConfig = pkgs.writeText "niri-greeter.kdl" ''
+    input {
+        keyboard {
+            xkb {
+                layout "us"
+            }
+        }
+
+        touchpad {
+            tap
+            natural-scroll
+        }
+    }
+
+    output "DP-1" {
+        mode "2560x1440@60"
+        scale 1
+        position x=0 y=0
+    }
+
+    output "HDMI-A-1" {
+        off
+    }
+
+    output "HDMI-A-2" {
+        off
+    }
+
+    spawn-at-startup "${pkgs.runtimeShell}" "-c" "${config.programs.regreet.package}/bin/regreet; ${pkgs.niri}/bin/niri msg action quit --skip-confirmation"
+
+    binds {
+        Mod+Shift+E { quit; }
+    }
+  '';
+in
 {
   programs.regreet = {
     enable = true;
-
-    cageArgs = [
-      "-s"
-      "-d"
-      "-m"
-      "last"
-    ];
 
     font = {
       package = pkgs.nerd-fonts.jetbrains-mono;
@@ -33,13 +67,9 @@
     };
 
     settings = {
-      GTK = {
-        application_prefer_dark_theme = true;
-      };
+      GTK.application_prefer_dark_theme = true;
 
-      appearance = {
-        greeting_msg = "Welcome back, attodao";
-      };
+      appearance.greeting_msg = "Welcome back, attodao";
 
       widget.clock = {
         format = "%Y-%m-%d  %H:%M";
@@ -67,11 +97,6 @@
         background-color: rgba(17, 17, 27, 0.78);
         border-radius: 24px;
         padding: 32px;
-        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
-      }
-
-      label {
-        font-weight: 600;
       }
 
       entry {
@@ -85,4 +110,7 @@
       }
     '';
   };
+
+  services.greetd.settings.default_session.command =
+    lib.mkForce "${pkgs.dbus}/bin/dbus-run-session ${pkgs.niri}/bin/niri --config ${greeterNiriConfig}";
 }
