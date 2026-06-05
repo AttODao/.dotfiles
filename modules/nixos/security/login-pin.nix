@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.attodao.loginPin;
@@ -75,7 +80,9 @@ let
 
       user="''${1:-attodao}"
 
-      case " ${lib.concatStringsSep " " cfg.users} " in
+      allowed_users=" ${lib.concatStringsSep " " cfg.users} "
+
+      case "$allowed_users" in
         *" $user "*) ;;
         *)
           echo "error: user '$user' is not enabled for login PIN" >&2

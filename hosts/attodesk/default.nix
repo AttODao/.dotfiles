@@ -25,6 +25,7 @@
     ../../modules/nixos/fonts.nix
 
     ../../modules/nixos/programs/aagl.nix
+    ../../modules/nixos/programs/nix-ld.nix
     ../../modules/nixos/programs/steam.nix
     ../../modules/nixos/programs/zsh.nix
 
