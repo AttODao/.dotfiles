@@ -10,6 +10,5 @@
     protonup-qt
     qt6Packages.qt6ct
     quickshell
-    zed-editor
   ];
 }
