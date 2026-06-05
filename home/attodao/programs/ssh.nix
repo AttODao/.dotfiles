@@ -9,22 +9,36 @@ in
 {
   programs.ssh = {
     enable = true;
+    enableDefaultConfig = false;
 
-    matchBlocks = {
+    settings = {
+      "*" = {
+        ForwardAgent = false;
+        AddKeysToAgent = "no";
+        Compression = false;
+        ServerAliveInterval = 0;
+        ServerAliveCountMax = 3;
+        HashKnownHosts = false;
+        UserKnownHostsFile = "~/.ssh/known_hosts";
+        ControlMaster = "no";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ControlPersist = "no";
+      };
+
       attobox = cloudflareTunnelSsh // {
-        hostname = "attobox.attodao.cc";
-        user = "attodao";
+        HostName = "attobox.attodao.cc";
+        User = "attodao";
       };
 
       attofort = cloudflareTunnelSsh // {
-        hostname = "attofort.attodao.cc";
-        user = "attodao";
+        HostName = "attofort.attodao.cc";
+        User = "attodao";
       };
 
       "git.attodao.cc" = cloudflareTunnelSsh // {
-        hostname = "git.attodao.cc";
-        identityFile = [ "~/.ssh/id_ed25519_forgejo" ];
-        identitiesOnly = true;
+        HostName = "git.attodao.cc";
+        IdentityFile = [ "~/.ssh/id_ed25519_forgejo" ];
+        IdentitiesOnly = true;
       };
     };
   };

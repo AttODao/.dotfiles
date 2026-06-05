@@ -17,7 +17,7 @@
   };
 
   environment.systemPackages = [
-    inputs.home-manager.packages.${pkgs.system}.home-manager
+    inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.home-manager
   ];
 
   # Home Manager が既存ファイルと衝突した場合のバックアップ拡張子

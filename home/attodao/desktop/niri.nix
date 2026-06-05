@@ -13,9 +13,24 @@ in
   programs.niri.settings = {
     spawn-at-startup = [
       { command = [ "noctalia-shell" ]; }
-      { command = [ "xwayland-satellite" ":0" ]; }
-      { command = [ "fcitx5" "-r" ]; }
-      { command = [ "foot" "--server" ]; }
+      {
+        command = [
+          "xwayland-satellite"
+          ":0"
+        ];
+      }
+      {
+        command = [
+          "fcitx5"
+          "-r"
+        ];
+      }
+      {
+        command = [
+          "foot"
+          "--server"
+        ];
+      }
     ];
 
     hotkey-overlay.skip-at-startup = true;

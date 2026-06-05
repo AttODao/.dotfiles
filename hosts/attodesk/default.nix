@@ -13,25 +13,17 @@
     ../../modules/nixos/core/users.nix
     ../../modules/nixos/core/packages.nix
 
-    ../../modules/nixos/hardware/bluetooth.nix
-    ../../modules/nixos/hardware/graphics.nix
-    ../../modules/nixos/hardware/sound/pipewire.nix
+    ../../modules/nixos/hardware
 
     ../../modules/nixos/boot/limine.nix
 
-    ../../modules/nixos/desktop/greeter.nix
-    ../../modules/nixos/desktop/gtk.nix
-    ../../modules/nixos/desktop/niri.nix
+    ../../modules/nixos/desktop
 
     ../../modules/nixos/fonts.nix
 
-    ../../modules/nixos/programs/aagl.nix
-    ../../modules/nixos/programs/nix-ld.nix
-    ../../modules/nixos/programs/steam.nix
-    ../../modules/nixos/programs/zsh.nix
+    ../../modules/nixos/programs
 
-    ../../modules/nixos/services/evolution-data-server.nix
-    ../../modules/nixos/services/openssh.nix
+    ../../modules/nixos/services
 
     ../../modules/nixos/security/login-pin.nix
   ];

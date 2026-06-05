@@ -1,13 +1,16 @@
 { lib, pkgs, ... }:
 let
   steamExec = ''/bin/sh -c "sleep 1; exec steam \"\$@\"" steam'';
-  pcmanfmIcon = pkgs.runCommandLocal "pcmanfm-icon.png" {
-    nativeBuildInputs = [ pkgs.librsvg ];
-  } ''
-    rsvg-convert -w 256 -h 256 \
-      ${pkgs.papirus-icon-theme}/share/icons/Papirus/64x64/apps/system-file-manager.svg \
-      > $out
-  '';
+  pcmanfmIcon =
+    pkgs.runCommandLocal "pcmanfm-icon.png"
+      {
+        nativeBuildInputs = [ pkgs.librsvg ];
+      }
+      ''
+        rsvg-convert -w 256 -h 256 \
+          ${pkgs.papirus-icon-theme}/share/icons/Papirus/64x64/apps/system-file-manager.svg \
+          > $out
+      '';
 in
 {
   xdg = {
@@ -91,12 +94,13 @@ in
     '';
 
     dataFile."applications/protonup-qt.desktop".source =
-      pkgs.runCommandLocal "protonup-qt-desktop-entry" { } ''
-        substitute \
-          ${pkgs.protonup-qt}/share/applications/protonup-qt.desktop \
-          $out \
-          --replace-fail 'Exec=protonup-qt' 'Exec=${lib.getExe pkgs.protonup-qt}'
-      '';
+      pkgs.runCommandLocal "protonup-qt-desktop-entry" { }
+        ''
+          substitute \
+            ${pkgs.protonup-qt}/share/applications/protonup-qt.desktop \
+            $out \
+            --replace-fail 'Exec=protonup-qt' 'Exec=${lib.getExe pkgs.protonup-qt}'
+        '';
 
     mimeApps = {
       enable = true;
