@@ -8,6 +8,7 @@
       "wheel"
       "video"
       "input"
+      "uinput"
       "audio"
     ];
     shell = pkgs.zsh;

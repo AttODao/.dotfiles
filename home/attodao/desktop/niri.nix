@@ -35,6 +35,26 @@ in
 
     hotkey-overlay.skip-at-startup = true;
 
+    window-rules = [
+      {
+        matches = [
+          { title = "Kando Menu"; }
+        ];
+
+        open-floating = true;
+
+        focus-ring.enable = false;
+        border.enable = false;
+        shadow.enable = false;
+
+        default-floating-position = {
+          x = 0;
+          y = 0;
+          relative-to = "top-left";
+        };
+      }
+    ];
+
     binds = with config.lib.niri.actions; {
       # アプリ起動
       "Mod+Return".action = spawn "footclient";

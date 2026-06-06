@@ -5,7 +5,11 @@
 
   programs = {
     dconf.enable = true;
-    niri.enable = true;
+
+    hyprland = {
+      enable = true;
+      withUWSM = true;
+    };
   };
 
   services.gvfs.enable = true;

@@ -9,12 +9,11 @@
   };
 
   imports = [
-    inputs.niri.homeModules.niri
     inputs.noctalia.homeModules.default
 
     ./packages.nix
     ./desktop/environment.nix
-    ./desktop/niri.nix
+    ./desktop/hyprland.nix
     ./desktop/noctalia.nix
     ./desktop/xdg.nix
     ./programs/apps.nix
@@ -23,6 +22,8 @@
     ./programs/ssh.nix
     ./programs/starship.nix
     ./programs/zsh.nix
+    ./services/kando.nix
+    ./services/solaar.nix
     ./services/linux-wallpaperengine.nix
   ];
 

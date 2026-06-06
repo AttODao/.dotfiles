@@ -7,7 +7,6 @@
     streamcontroller
     unzip
     wget
-    xwayland-satellite
     zip
   ];
 }

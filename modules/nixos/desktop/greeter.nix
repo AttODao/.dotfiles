@@ -6,29 +6,22 @@
 }:
 
 let
-  greeterNiriConfig = pkgs.writeText "niri-greeter.kdl" ''
-    hotkey-overlay {
-        skip-at-startup
-    }
+  greeterCommand = pkgs.writeShellScript "regreet-hyprland" ''
+    ${config.programs.regreet.package}/bin/regreet
+    ${pkgs.hyprland}/bin/hyprctl dispatch exit || true
+  '';
 
-    output "DP-1" {
-        mode "2560x1440@60"
-        scale 1
-        position x=0 y=0
-    }
+  greeterHyprlandConfig = pkgs.writeText "hyprland-greeter.conf" ''
+    monitor = DP-1, 2560x1440@60, 0x0, 1
+    monitor = HDMI-A-1, disable
+    monitor = HDMI-A-2, disable
 
-    output "HDMI-A-1" {
-        off
-    }
+    exec-once = ${greeterCommand}
 
-    output "HDMI-A-2" {
-        off
-    }
-
-    spawn-at-startup "${pkgs.runtimeShell}" "-c" "${config.programs.regreet.package}/bin/regreet; ${pkgs.niri}/bin/niri msg action quit --skip-confirmation"
-
-    binds {
-        Mod+Shift+E { quit; }
+    bind = SUPER SHIFT, E, exit
+    misc {
+      disable_hyprland_logo = true
+      disable_splash_rendering = true
     }
   '';
 in
@@ -103,5 +96,5 @@ in
   };
 
   services.greetd.settings.default_session.command =
-    lib.mkForce "${pkgs.dbus}/bin/dbus-run-session ${pkgs.niri}/bin/niri --config ${greeterNiriConfig}";
+    lib.mkForce "${pkgs.dbus}/bin/dbus-run-session ${pkgs.hyprland}/bin/start-hyprland -- --config ${greeterHyprlandConfig}";
 }
