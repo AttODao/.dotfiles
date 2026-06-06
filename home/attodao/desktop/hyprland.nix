@@ -10,11 +10,16 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
+
+    # Home Manager master / stateVersion 26.05 以降でも、Lua ではなく
+    # ~/.config/hypr/hyprland.conf を生成する。
+    configType = "hyprlang";
+
     systemd.enable = false;
     xwayland.enable = true;
 
     settings = {
-      "mod" = mod;
+      "$mod" = mod;
 
       env = [
         "ELECTRON_OZONE_PLATFORM_HINT,auto"
@@ -39,7 +44,7 @@ in
 
       bind = [
         # アプリ起動
-        "$mod + Return, exec footclient"
+        "$mod, Return, exec, footclient"
         "$mod, E, exec, pcmanfm"
 
         # Noctalia コア
@@ -60,11 +65,11 @@ in
         "$mod, L, exec, ${noctalia "lockScreen lock"}"
 
         # ウィンドウ操作
-        "$mod, Q, killactive"
+        "$mod, Q, killactive,"
         "$mod, F, fullscreen, 1"
         "$mod SHIFT, F, fullscreen, 0"
-        "$mod, C, centerwindow"
-        "$mod, R, togglefloating"
+        "$mod, C, centerwindow,"
+        "$mod, R, togglefloating,"
 
         # フォーカス移動
         "$mod, Left, movefocus, l"
@@ -89,7 +94,7 @@ in
 
         # Hyprland システム
         "$mod SHIFT, R, exec, hyprctl reload"
-        "$mod SHIFT, E, exit"
+        "$mod SHIFT, E, exit,"
       ];
 
       bindl = [
@@ -106,31 +111,24 @@ in
         ", XF86AudioNext, exec, ${noctalia "media next"}"
         ", XF86AudioPrev, exec, ${noctalia "media previous"}"
       ];
+
+      exec-once = [
+        "noctalia-shell"
+        "fcitx5 -r"
+        "foot --server"
+      ];
+
+      windowrule = [
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, float on"
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, pin on"
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, move 0 0"
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, size 100% 100%"
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, border_size 0"
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, rounding 0"
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, no_anim on"
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, no_blur on"
+        "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, opaque on"
+      ];
     };
-
-    extraConfig = ''
-      hl.on("hyprland.start", function ()
-        hl.exec_cmd("noctalia-shell")
-        hl.exec_cmd("fcitx5 -r")
-        hl.exec_cmd("foot --server")
-      end)
-
-      hl.windowrule({
-        name = "kando",
-        match = {
-          class = "menu.kando.Kando",
-          title = "Kando Menu",
-        },
-        no_blur = true,
-        opaque = true,
-        move = { 0, 0 },
-        rounding = 0,
-        size = { "100%", "100%" },
-        border_size = 0,
-        no_anim = true,
-        float = true,
-        pin = true,
-      })
-    '';
   };
 }
