@@ -34,7 +34,7 @@
 
       appLauncher = {
         customLaunchPrefixEnabled = true;
-        customLaunchPrefix = "systemd-run --user --scope --collect --";
+        customLaunchPrefix = "uwsm app -t service --";
       };
 
       location = {
@@ -47,7 +47,7 @@
         enabled = true;
         forced = true;
         autoSchedule = false;
-        nightTemp = "4000";
+        nightTemp = "4500";
         dayTemp = "6500";
       };
 

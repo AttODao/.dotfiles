@@ -12,7 +12,7 @@ let
   '';
 
   greeterHyprlandConfig = pkgs.writeText "hyprland-greeter.conf" ''
-    monitor = DP-1, 2560x1440@60, 0x0, 1
+    monitor = DP-1, 2560x1440@60, 0x0, 1, bitdepth, 10, cm, hdr
     monitor = HDMI-A-1, disable
     monitor = HDMI-A-2, disable
 

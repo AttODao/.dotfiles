@@ -23,11 +23,15 @@ in
 
       env = [
         "ELECTRON_OZONE_PLATFORM_HINT,auto"
+        "XCURSOR_THEME,Bibata-Modern-Ice"
+        "XCURSOR_SIZE,24"
+        "HYPRCURSOR_THEME,Bibata-Modern-Ice"
+        "HYPRCURSOR_SIZE,24"
       ];
 
       monitor = [
-        "HDMI-A-2,1920x1080@100,0x0,1"
-        "DP-1,2560x1440@143.999,1920x260,1"
+        "HDMI-A-2,1920x1080@100,0x0,1,bitdepth,10,cm,hdr"
+        "DP-1,2560x1440@143.999,1920x260,1,bitdepth,10,cm,hdr"
         "HDMI-A-1,1920x1080@60,4480x394,1"
       ];
 
@@ -44,8 +48,8 @@ in
 
       bind = [
         # アプリ起動
-        "$mod, Return, exec, footclient"
-        "$mod, E, exec, pcmanfm"
+        "$mod, Return, exec, uwsm app -t service -- footclient"
+        "$mod, E, exec, uwsm app -t service -- pcmanfm"
 
         # Noctalia コア
         "$mod, Space, exec, ${noctalia "launcher toggle"}"
@@ -88,9 +92,9 @@ in
         "$mod, mouse_up, workspace, e-1"
 
         # スクリーンショット
-        "$mod SHIFT, S, exec, hyprshot -m region"
-        "$mod ALT SHIFT, S, exec, hyprshot -m window"
-        "$mod CTRL SHIFT, S, exec, hyprshot -m output"
+        "$mod SHIFT, S, exec, uwsm app -t service -- hyprshot -m region"
+        "$mod ALT SHIFT, S, exec, uwsm app -t service -- hyprshot -m window"
+        "$mod CTRL SHIFT, S, exec, uwsm app -t service -- hyprshot -m output"
 
         # Hyprland システム
         "$mod SHIFT, R, exec, hyprctl reload"
@@ -112,10 +116,20 @@ in
         ", XF86AudioPrev, exec, ${noctalia "media previous"}"
       ];
 
+      bindm = [
+        "$mod, mouse:272, movewindow"
+        "$mod, mouse:273, resizewindow"
+      ];
+
+      cursor = {
+        enable_hyprcursor = true;
+        no_hardware_cursors = true;
+      };
+
       exec-once = [
-        "noctalia-shell"
-        "fcitx5 -r"
-        "foot --server"
+        "uwsm app -t service -- noctalia-shell"
+        "uwsm app -t service -- fcitx5 -r"
+        "uwsm app -t service -- foot --server"
       ];
 
       windowrule = [
