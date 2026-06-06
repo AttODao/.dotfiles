@@ -11,19 +11,11 @@ let
     ${pkgs.hyprland}/bin/hyprctl dispatch exit || true
   '';
 
-  greeterHyprlandConfig = pkgs.writeText "hyprland-greeter.conf" ''
-    monitor = DP-1, 2560x1440@60, 0x0, 1, bitdepth, 10, cm, hdr
-    monitor = HDMI-A-1, disable
-    monitor = HDMI-A-2, disable
-
-    exec-once = ${greeterCommand}
-
-    bind = SUPER SHIFT, E, exit
-    misc {
-      disable_hyprland_logo = true
-      disable_splash_rendering = true
-    }
-  '';
+  greeterHyprlandConfig = pkgs.writeText "hyprland-greeter.conf" (
+    builtins.replaceStrings [ "@GREETER_COMMAND@" ] [ "${greeterCommand}" ] (
+      builtins.readFile ./greeter/hyprland.conf
+    )
+  );
 in
 {
   programs.regreet = {
@@ -72,27 +64,7 @@ in
       };
     };
 
-    extraCss = ''
-      window {
-        background: linear-gradient(135deg, #11111b, #1e1e2e 45%, #313244);
-      }
-
-      box#body {
-        background-color: rgba(17, 17, 27, 0.78);
-        border-radius: 24px;
-        padding: 32px;
-      }
-
-      entry {
-        border-radius: 14px;
-        padding: 10px 14px;
-      }
-
-      button {
-        border-radius: 14px;
-        padding: 8px 16px;
-      }
-    '';
+    extraCss = builtins.readFile ./greeter/regreet.css;
   };
 
   services.greetd.settings.default_session.command =

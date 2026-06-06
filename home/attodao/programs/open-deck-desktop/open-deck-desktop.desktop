@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Open-Deck
+Exec=@OPEN_DECK_APPIMAGE@ --no-sandbox %U
+Terminal=false
+Type=Application
+Icon=open_deck_desktop
+StartupWMClass=Open-Deck
+X-AppImage-Version=latest
+Comment=Open-Deck
+Categories=Network;

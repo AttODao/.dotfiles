@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
   cursorTheme = "Bibata-Modern-Ice";
   cursorSize = 24;

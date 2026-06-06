@@ -1,5 +1,8 @@
 { pkgs, ... }:
 let
+  pcmanfmDesktopEntry = builtins.replaceStrings [ "@PCMANFM@" ] [ "${pkgs.pcmanfm}/bin/pcmanfm" ] (
+    builtins.readFile ./xdg/pcmanfm.desktop
+  );
   pcmanfmIcon =
     pkgs.runCommandLocal "pcmanfm-icon.png"
       {
@@ -17,20 +20,7 @@ in
 
     dataFile."icons/hicolor/256x256/apps/pcmanfm.png".source = pcmanfmIcon;
 
-    dataFile."applications/pcmanfm.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Name=PCMan File Manager
-      Name[ja]=PCMan ファイルマネージャ
-      GenericName=File Manager
-      GenericName[ja]=ファイルマネージャ
-      Exec=${pkgs.pcmanfm}/bin/pcmanfm %U
-      Icon=pcmanfm
-      Terminal=false
-      StartupNotify=true
-      Categories=GTK;System;Core;FileTools;FileManager;
-      MimeType=inode/directory;x-directory/normal;
-    '';
+    dataFile."applications/pcmanfm.desktop".text = pcmanfmDesktopEntry;
 
     mimeApps = {
       enable = true;
