@@ -19,6 +19,7 @@
     ./programs/apps.nix
     ./programs/foot.nix
     ./programs/floorp.nix
+    ./programs/open-deck-desktop.nix
     ./programs/ssh.nix
     ./programs/starship.nix
     ./programs/zsh.nix
