@@ -65,6 +65,9 @@ in
       "Mod+S".action.spawn = noctalia "controlCenter toggle";
       "Mod+Comma".action.spawn = noctalia "settings toggle";
 
+      # Noctalia プラグイン
+      "Mod+F1".action.spawn = noctalia "plugin:keybind-cheatsheet toggle";
+
       # クイックアクセス
       "Mod+V".action.spawn = noctalia "launcher clipboard";
       "Mod+Period".action.spawn = noctalia "launcher emoji";

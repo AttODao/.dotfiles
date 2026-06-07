@@ -56,6 +56,10 @@ in
         "$mod, S, exec, ${noctalia "controlCenter toggle"}"
         "$mod, Comma, exec, ${noctalia "settings toggle"}"
 
+        # Noctalia プラグイン
+        "$mod, Tab, exec, ${noctalia "plugin:workspace-overview toggle"}"
+        "$mod, F1, exec, ${noctalia "plugin:keybind-cheatsheet toggle"}"
+
         # クイックアクセス
         "$mod, V, exec, ${noctalia "launcher clipboard"}"
         "$mod, Period, exec, ${noctalia "launcher emoji"}"
@@ -97,7 +101,7 @@ in
         "$mod CTRL SHIFT, S, exec, uwsm app -t service -- hyprshot -m output"
 
         # Hyprland システム
-        "$mod SHIFT, R, exec, hyprctl reload"
+        "$mod SHIFT, R, exec, uwsm app -t service -- hyprctl reload"
         "$mod SHIFT, E, exit,"
       ];
 
