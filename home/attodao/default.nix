@@ -14,6 +14,7 @@
     ./packages.nix
     ./desktop/environment.nix
     ./desktop/hyprland.nix
+    ./desktop/mozc-ut.nix
     ./desktop/noctalia.nix
     ./desktop/xdg.nix
     ./programs/apps.nix

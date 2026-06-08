@@ -34,6 +34,51 @@
       flake = false;
     };
 
+    merge-ut-dictionaries = {
+      url = "github:utuhiro78/merge-ut-dictionaries";
+      flake = false;
+    };
+
+    mozcdic-ut-alt-cannadic = {
+      url = "github:utuhiro78/mozcdic-ut-alt-cannadic";
+      flake = false;
+    };
+
+    mozcdic-ut-edict2 = {
+      url = "github:utuhiro78/mozcdic-ut-edict2";
+      flake = false;
+    };
+
+    mozcdic-ut-jawiki = {
+      url = "github:utuhiro78/mozcdic-ut-jawiki";
+      flake = false;
+    };
+
+    mozcdic-ut-neologd = {
+      url = "github:utuhiro78/mozcdic-ut-neologd";
+      flake = false;
+    };
+
+    mozcdic-ut-personal-names = {
+      url = "github:utuhiro78/mozcdic-ut-personal-names";
+      flake = false;
+    };
+
+    mozcdic-ut-place-names = {
+      url = "github:utuhiro78/mozcdic-ut-place-names";
+      flake = false;
+    };
+
+    mozcdic-ut-skk-jisyo = {
+      url = "github:utuhiro78/mozcdic-ut-skk-jisyo";
+      flake = false;
+    };
+
+    mozcdic-ut-sudachidict = {
+      url = "github:utuhiro78/mozcdic-ut-sudachidict";
+      flake = false;
+    };
+
     aagl = {
       url = "github:ezKEa/aagl-gtk-on-nix";
       inputs.nixpkgs.follows = "nixpkgs";

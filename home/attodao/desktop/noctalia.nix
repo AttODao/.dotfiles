@@ -66,6 +66,7 @@ in
           "Zed"
           "Floorp"
           "Open-Deck"
+          "Prism Launcher"
           "An Anime Game Launcher"
           "The Honkers Railway Launcher"
         ];
