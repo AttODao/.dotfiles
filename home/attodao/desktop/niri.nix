@@ -3,16 +3,15 @@ let
   noctalia =
     cmd:
     [
-      "noctalia-shell"
-      "ipc"
-      "call"
+      "noctalia"
+      "msg"
     ]
     ++ (pkgs.lib.splitString " " cmd);
 in
 {
   programs.niri.settings = {
     spawn-at-startup = [
-      { command = [ "noctalia-shell" ]; }
+      { command = [ "noctalia" ]; }
       {
         command = [
           "xwayland-satellite"
@@ -61,24 +60,21 @@ in
       "Mod+E".action = spawn "pcmanfm";
 
       # Noctalia コア
-      "Mod+Space".action.spawn = noctalia "launcher toggle";
-      "Mod+S".action.spawn = noctalia "controlCenter toggle";
-      "Mod+Comma".action.spawn = noctalia "settings toggle";
-
-      # Noctalia プラグイン
-      "Mod+F1".action.spawn = noctalia "plugin:keybind-cheatsheet toggle";
+      "Mod+Space".action.spawn = noctalia "panel-toggle launcher";
+      "Mod+S".action.spawn = noctalia "panel-toggle control-center";
+      "Mod+Comma".action.spawn = noctalia "settings-toggle";
 
       # クイックアクセス
-      "Mod+V".action.spawn = noctalia "launcher clipboard";
-      "Mod+Period".action.spawn = noctalia "launcher emoji";
+      "Mod+V".action.spawn = noctalia "panel-toggle clipboard";
+      "Mod+Period".action.spawn = noctalia "panel-toggle launcher /emo ";
 
       # カレンダー・システムモニター
-      "Mod+K".action.spawn = noctalia "calendar toggle";
-      "Mod+M".action.spawn = noctalia "systemMonitor toggle";
+      "Mod+K".action.spawn = noctalia "panel-toggle control-center calendar";
+      "Mod+M".action.spawn = noctalia "panel-toggle control-center system";
 
       # セッション・ロック
-      "Mod+Escape".action.spawn = noctalia "sessionMenu toggle";
-      "Mod+L".action.spawn = noctalia "lockScreen lock";
+      "Mod+Escape".action.spawn = noctalia "panel-toggle session";
+      "Mod+L".action.spawn = noctalia "session lock";
 
       # ウィンドウ操作
       "Mod+Q".action = close-window;
@@ -117,15 +113,15 @@ in
       "Mod+Ctrl+Shift+S".action = spawn-sh "niri msg action screenshot-screen";
 
       # 音量・輝度（Noctalia IPC 経由）
-      "XF86AudioRaiseVolume".action.spawn = noctalia "volume increase";
-      "XF86AudioLowerVolume".action.spawn = noctalia "volume decrease";
-      "XF86AudioMute".action.spawn = noctalia "volume muteOutput";
-      "XF86AudioMicMute".action.spawn = noctalia "volume muteInput";
-      "XF86MonBrightnessUp".action.spawn = noctalia "brightness increase";
-      "XF86MonBrightnessDown".action.spawn = noctalia "brightness decrease";
+      "XF86AudioRaiseVolume".action.spawn = noctalia "volume-up";
+      "XF86AudioLowerVolume".action.spawn = noctalia "volume-down";
+      "XF86AudioMute".action.spawn = noctalia "volume-mute";
+      "XF86AudioMicMute".action.spawn = noctalia "microphone-mute";
+      "XF86MonBrightnessUp".action.spawn = noctalia "brightness-up";
+      "XF86MonBrightnessDown".action.spawn = noctalia "brightness-down";
 
       # メディアコントロール
-      "XF86AudioPlay".action.spawn = noctalia "media playPause";
+      "XF86AudioPlay".action.spawn = noctalia "media toggle";
       "XF86AudioNext".action.spawn = noctalia "media next";
       "XF86AudioPrev".action.spawn = noctalia "media previous";
 

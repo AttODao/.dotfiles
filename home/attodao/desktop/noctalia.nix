@@ -3,144 +3,111 @@
   pkgs,
   ...
 }:
-let
-  noctaliaPluginSource = "https://github.com/noctalia-dev/noctalia-plugins";
-in
 {
   home.packages = [
     pkgs.wl-clipboard
   ];
 
   xdg.configFile = {
-    "noctalia/colorschemes/Everforest/Everforest.json".source =
+    "noctalia/palettes/Everforest.json".source =
       "${inputs.noctalia-community-palettes}/Everforest/Everforest.json";
   };
 
-  programs.noctalia-shell = {
+  programs.noctalia = {
     enable = true;
-    package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
-      calendarSupport = true;
-    };
 
     settings = {
       bar = {
-        position = "top";
-        density = "default";
-        widgets = {
-          left = [
-            { id = "Launcher"; }
-            { id = "plugin:keybind-cheatsheet"; }
-            { id = "Clock"; }
-            { id = "SystemMonitor"; }
-            { id = "ActiveWindow"; }
-            { id = "MediaMini"; }
+        order = [ "main" ];
+        main = {
+          position = "top";
+          thickness = 34;
+          background_opacity = 0.92;
+          radius = 10;
+          margin_ends = 12;
+          margin_edge = 6;
+          padding = 12;
+          widget_spacing = 6;
+          shadow = true;
+          reserve_space = true;
+          start = [
+            "launcher"
+            "clock"
+            "sysmon"
+            "active_window"
           ];
           center = [
-            { id = "Workspace"; }
-            { id = "plugin:workspace-overview"; }
+            "workspaces"
           ];
-          right = [
-            { id = "Tray"; }
-            { id = "NotificationHistory"; }
-            { id = "Battery"; }
-            { id = "Volume"; }
-            { id = "Brightness"; }
-            { id = "ControlCenter"; }
+          end = [
+            "media"
+            "tray"
+            "notifications"
+            "clipboard"
+            "network"
+            "bluetooth"
+            "volume"
+            "brightness"
+            "battery"
+            "control-center"
+            "session"
           ];
         };
       };
 
-      general.avatarImage = "/home/attodao/.face";
+      shell = {
+        avatar_path = "/home/attodao/.face";
+        time_format = "{:%H:%M}";
+        date_format = "%Y-%m-%d";
+        launch_apps_as_systemd_services = true;
+        panel = {
+          transparency_mode = "glass";
+          launcher_placement = "centered";
+          control_center_placement = "attached";
+          session_placement = "attached";
+        };
+      };
 
       dock = {
-        onlySameOutput = false;
-        showLauncherIcon = true;
-        launcherPosition = "start";
-        launcherUseDistroLogo = true;
-        groupApps = true;
-        groupClickAction = "cycle";
-        groupIndicatorStyle = "dots";
-        pinnedApps = [
-          "Foot Client"
-          "PCManFM"
-          "Zed"
-          "Floorp"
-          "Open-Deck"
-          "Prism Launcher"
-          "An Anime Game Launcher"
-          "The Honkers Railway Launcher"
+        enabled = true;
+        position = "bottom";
+        launcher_position = "start";
+        active_monitor_only = false;
+        show_running = true;
+        show_dots = true;
+        pinned = [
+          "footclient"
+          "pcmanfm"
+          "dev.zed.Zed"
+          "floorp"
+          "open-deck"
+          "org.prismlauncher.PrismLauncher"
+          "anime-game-launcher"
+          "honkers-railway-launcher"
         ];
       };
 
-      appLauncher = {
-        customLaunchPrefixEnabled = true;
-        customLaunchPrefix = "uwsm app -t service --";
+      theme = {
+        mode = "dark";
+        source = "custom";
+        custom_palette = "Everforest";
+      };
+
+      weather = {
+        enabled = true;
+        unit = "celsius";
       };
 
       location = {
-        name = "Toyoake, Japan";
-        use12hourFormat = false;
-        useFahrenheit = false;
+        address = "Toyoake, Japan";
       };
 
-      nightLight = {
+      nightlight = {
         enabled = true;
-        forced = true;
-        autoSchedule = false;
-        nightTemp = "4500";
-        dayTemp = "6500";
+        force = true;
+        temperature_day = 6500;
+        temperature_night = 4500;
       };
-
-      colorSchemes = {
-        predefinedScheme = "Everforest";
-        darkMode = true;
-        schedulingMode = "off";
-      };
-
-      plugins = {
-        autoUpdate = false;
-        notifyUpdates = true;
-      };
-    };
-
-    plugins = {
-      sources = [
-        {
-          enabled = true;
-          name = "Noctalia Plugins";
-          url = noctaliaPluginSource;
-        }
-      ];
-      states = {
-        workspace-overview = {
-          enabled = true;
-          sourceUrl = noctaliaPluginSource;
-        };
-        keybind-cheatsheet = {
-          enabled = true;
-          sourceUrl = noctaliaPluginSource;
-        };
-      };
-      version = 2;
-    };
-
-    pluginSettings = {
-      keybind-cheatsheet = {
-        windowWidth = 1400;
-        windowHeight = 850;
-        autoHeight = true;
-        columnCount = 3;
-        modKeyVariable = "$mod";
-        hyprlandConfigPath = "~/.config/hypr/hyprland.conf";
-        niriConfigPath = "~/.config/niri/config.kdl";
-        hyprlandParserMode = "conf";
-        mergeSequentialBinds = true;
-        showUndescribedBinds = true;
-        splitLargeWorkspaceCategory = true;
-        workspaceSplitThreshold = 12;
-      };
-
-      workspace-overview = { };
     };
   };
 }

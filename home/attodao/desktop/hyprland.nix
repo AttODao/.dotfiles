@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   mod = "SUPER";
-  noctalia = cmd: "noctalia-shell ipc call ${cmd}";
+  noctalia = cmd: "noctalia msg ${cmd}";
 in
 {
   home.packages = [
@@ -108,25 +108,21 @@ in
         "$mod, E, exec, uwsm app -t service -- pcmanfm"
 
         # Noctalia コア
-        "$mod, Space, exec, ${noctalia "launcher toggle"}"
-        "$mod, S, exec, ${noctalia "controlCenter toggle"}"
-        "$mod, Comma, exec, ${noctalia "settings toggle"}"
-
-        # Noctalia プラグイン
-        "$mod, Tab, exec, ${noctalia "plugin:workspace-overview toggle"}"
-        "$mod, F1, exec, ${noctalia "plugin:keybind-cheatsheet toggle"}"
+        "$mod, Space, exec, ${noctalia "panel-toggle launcher"}"
+        "$mod, S, exec, ${noctalia "panel-toggle control-center"}"
+        "$mod, Comma, exec, ${noctalia "settings-toggle"}"
 
         # クイックアクセス
-        "$mod, V, exec, ${noctalia "launcher clipboard"}"
-        "$mod, Period, exec, ${noctalia "launcher emoji"}"
+        "$mod, V, exec, ${noctalia "panel-toggle clipboard"}"
+        "$mod, Period, exec, ${noctalia "panel-toggle launcher /emo "}"
 
         # カレンダー・システムモニター
-        "$mod, K, exec, ${noctalia "calendar toggle"}"
-        "$mod, M, exec, ${noctalia "systemMonitor toggle"}"
+        "$mod, K, exec, ${noctalia "panel-toggle control-center calendar"}"
+        "$mod, M, exec, ${noctalia "panel-toggle control-center system"}"
 
         # セッション・ロック
-        "$mod, Escape, exec, ${noctalia "sessionMenu toggle"}"
-        "$mod, L, exec, ${noctalia "lockScreen lock"}"
+        "$mod, Escape, exec, ${noctalia "panel-toggle session"}"
+        "$mod, L, exec, ${noctalia "session lock"}"
 
         # ウィンドウ操作
         "$mod, Q, killactive,"
@@ -163,15 +159,15 @@ in
 
       bindl = [
         # 音量・輝度（Noctalia IPC 経由）
-        ", XF86AudioRaiseVolume, exec, ${noctalia "volume increase"}"
-        ", XF86AudioLowerVolume, exec, ${noctalia "volume decrease"}"
-        ", XF86AudioMute, exec, ${noctalia "volume muteOutput"}"
-        ", XF86AudioMicMute, exec, ${noctalia "volume muteInput"}"
-        ", XF86MonBrightnessUp, exec, ${noctalia "brightness increase"}"
-        ", XF86MonBrightnessDown, exec, ${noctalia "brightness decrease"}"
+        ", XF86AudioRaiseVolume, exec, ${noctalia "volume-up"}"
+        ", XF86AudioLowerVolume, exec, ${noctalia "volume-down"}"
+        ", XF86AudioMute, exec, ${noctalia "volume-mute"}"
+        ", XF86AudioMicMute, exec, ${noctalia "microphone-mute"}"
+        ", XF86MonBrightnessUp, exec, ${noctalia "brightness-up"}"
+        ", XF86MonBrightnessDown, exec, ${noctalia "brightness-down"}"
 
         # メディアコントロール
-        ", XF86AudioPlay, exec, ${noctalia "media playPause"}"
+        ", XF86AudioPlay, exec, ${noctalia "media toggle"}"
         ", XF86AudioNext, exec, ${noctalia "media next"}"
         ", XF86AudioPrev, exec, ${noctalia "media previous"}"
       ];
@@ -187,7 +183,7 @@ in
       };
 
       exec-once = [
-        "uwsm app -t service -- noctalia-shell"
+        "uwsm app -t service -- noctalia"
         "uwsm app -t service -- fcitx5 -r"
         "uwsm app -t service -- foot --server"
       ];

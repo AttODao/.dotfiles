@@ -1,15 +1,14 @@
 { config, pkgs, ... }:
 let
   yamlList = items: builtins.concatStringsSep "\n  - " (map (item: builtins.toJSON item) items);
-  noctaliaShell = "${config.programs.noctalia-shell.package}/bin/noctalia-shell";
+  noctalia = "${config.programs.noctalia.package}/bin/noctalia";
   kando = "${pkgs.kando}/bin/kando";
 
   openNoctaliaLauncher = [
-    noctaliaShell
-    "ipc"
-    "call"
+    noctalia
+    "msg"
+    "panel-toggle"
     "launcher"
-    "toggle"
   ];
 
   openKandoMenu = [
