@@ -1,6 +1,8 @@
+{ pkgs, ... }:
 {
   programs.thunderbird = {
     enable = true;
+    package = pkgs.thunderbird-esr;
     languagePacks = [ "ja" ];
 
     profiles.attodao = {
@@ -18,11 +20,13 @@
   };
 
   accounts = {
+    calendar.basePath = ".local/share/calendars";
+
     email.accounts = {
       attodao = {
         primary = true;
         address = "attodao@attodao.cc";
-        realName = "AttO";
+        realName = "AttODao";
         userName = "attodao@attodao.cc";
 
         imap = {
@@ -47,7 +51,7 @@
 
       gmail = {
         address = "atsuatat@gmail.com";
-        realName = "AttO";
+        realName = "AttODao";
         flavor = "gmail.com";
         thunderbird.enable = true;
       };
@@ -63,13 +67,11 @@
       thunderbird = {
         enable = true;
         color = "#3584e4";
-        settings =
-          id:
-          {
-            "calendar.registry.calendar_${id}.imip.identity.key" =
-              "id_${builtins.hashString "sha256" "attodao"}";
-            "calendar.registry.calendar_${id}.refreshInterval" = 15;
-          };
+        settings = id: {
+          "calendar.registry.calendar_${id}.imip.identity.key" =
+            "id_${builtins.hashString "sha256" "attodao"}";
+          "calendar.registry.calendar_${id}.refreshInterval" = 15;
+        };
       };
     };
   };
