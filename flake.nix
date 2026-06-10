@@ -93,28 +93,47 @@
         inherit system;
         config.allowUnfree = true;
       };
+      hostNames = [
+        "attodesk"
+        "attolap"
+      ];
+      mkHost =
+        hostName:
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs hostName;
+          };
+
+          modules = [
+            ./hosts/${hostName}
+
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = {
+                inherit inputs hostName;
+              };
+              home-manager.users.attodao = import ./home/attodao;
+            }
+          ];
+        };
     in
     {
-      nixosConfigurations.attodesk = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-
-        modules = [
-          ./hosts/attodesk
-
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.attodao = import ./home/attodao;
-          }
-        ];
-      };
+      nixosConfigurations = builtins.listToAttrs (
+        map (hostName: {
+          name = hostName;
+          value = mkHost hostName;
+        }) hostNames
+      );
 
       homeConfigurations.attodao = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = {
+          inherit inputs;
+          hostName = "attodesk";
+        };
         modules = [
           ./home/attodao
         ];

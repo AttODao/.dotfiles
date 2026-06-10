@@ -1,5 +1,7 @@
 {
+  hostName,
   inputs,
+  lib,
   pkgs,
   ...
 }:
@@ -75,17 +77,20 @@
         active_monitor_only = false;
         show_running = true;
         show_dots = true;
-        pinned = [
-          "footclient"
-          "pcmanfm"
-          "dev.zed.Zed"
-          "floorp"
-          "thunderbird"
-          "open-deck"
-          "org.prismlauncher.PrismLauncher"
-          "anime-game-launcher"
-          "honkers-railway-launcher"
-        ];
+        pinned =
+          [
+            "footclient"
+            "pcmanfm"
+            "dev.zed.Zed"
+            "floorp"
+            "thunderbird"
+          ]
+          ++ lib.optionals (hostName == "attodesk") [
+            "open-deck"
+            "org.prismlauncher.PrismLauncher"
+            "anime-game-launcher"
+            "honkers-railway-launcher"
+          ];
       };
 
       theme = {

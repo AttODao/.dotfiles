@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  hostName,
+  lib,
+  pkgs,
+  ...
+}:
 {
   imports = [
     ./sound/pipewire.nix
@@ -9,7 +14,7 @@
     graphics.enable = true;
     uinput.enable = true;
 
-    logitech.wireless = {
+    logitech.wireless = lib.mkIf (hostName == "attodesk") {
       enable = true;
       enableGraphical = true;
     };

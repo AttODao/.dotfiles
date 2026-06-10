@@ -1,13 +1,21 @@
-{ pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
-    curl
-    fastfetch
-    git
-    seahorse
-    streamcontroller
-    unzip
-    wget
-    zip
-  ];
+  hostName,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  environment.systemPackages =
+    (with pkgs; [
+      curl
+      fastfetch
+      git
+      seahorse
+      unzip
+      wget
+      zip
+    ])
+    ++ lib.optionals (hostName == "attodesk") [
+      pkgs.streamcontroller
+    ];
 }

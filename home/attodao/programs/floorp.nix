@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  hostName,
+  lib,
+  pkgs,
+  ...
+}:
 {
   programs.floorp = {
     enable = true;
@@ -84,7 +89,8 @@
           Value = true;
           Status = "default";
         };
-
+      }
+      // lib.optionalAttrs (hostName == "attodesk") {
         "floorp.mousegesture.enabled" = {
           Value = true;
           Status = "default";
@@ -121,6 +127,8 @@
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/youtube-nonstop/latest.xpi";
         };
 
+      }
+      // lib.optionalAttrs (hostName == "attodesk") {
         "opd_release@kwdev" = {
           installation_mode = "force_installed";
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/open-deck/latest.xpi";

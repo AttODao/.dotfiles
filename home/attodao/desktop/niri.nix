@@ -1,4 +1,10 @@
-{ config, pkgs, ... }:
+{
+  config,
+  hostName,
+  lib,
+  pkgs,
+  ...
+}:
 let
   noctalia =
     cmd:
@@ -34,7 +40,7 @@ in
 
     hotkey-overlay.skip-at-startup = true;
 
-    window-rules = [
+    window-rules = lib.optionals (hostName == "attodesk") [
       {
         matches = [
           { title = "Kando Menu"; }
@@ -130,14 +136,13 @@ in
       "Mod+Shift+R".action = spawn-sh "niri msg action load-config-file";
     };
 
-    outputs = {
+    outputs = lib.mkIf (hostName == "attodesk") {
       "HDMI-A-2" = {
         mode = {
           width = 1920;
           height = 1080;
           refresh = 100.0;
         };
-
         position = {
           x = 0;
           y = 0;
@@ -150,7 +155,6 @@ in
           height = 1440;
           refresh = 143.999;
         };
-
         position = {
           x = 1920;
           y = 260;
@@ -163,7 +167,6 @@ in
           height = 1080;
           refresh = 60.0;
         };
-
         position = {
           x = 4480;
           y = 394;

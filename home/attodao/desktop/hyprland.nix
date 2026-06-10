@@ -1,7 +1,17 @@
-{ pkgs, ... }:
+{
+  hostName,
+  lib,
+  pkgs,
+  ...
+}:
 let
   mod = "SUPER";
   noctalia = cmd: "noctalia msg ${cmd}";
+  screenshotDirectory =
+    if hostName == "attodesk" then
+      "/mnt/hdd1/Pictures/Screenshots"
+    else
+      "/home/attodao/Pictures/Screenshots";
 in
 {
   home.packages = [
@@ -29,11 +39,15 @@ in
         "HYPRCURSOR_SIZE,24"
       ];
 
-      monitor = [
-        "HDMI-A-2,1920x1080@100,0x0,1,bitdepth,10,cm,hdr"
-        "DP-1,2560x1440@143.999,1920x260,1,bitdepth,10,cm,hdr"
-        "HDMI-A-1,1920x1080@60,4480x394,1"
-      ];
+      monitor =
+        if hostName == "attodesk" then
+          [
+            "HDMI-A-2,1920x1080@100,0x0,1,bitdepth,10,cm,hdr"
+            "DP-1,2560x1440@143.999,1920x260,1,bitdepth,10,cm,hdr"
+            "HDMI-A-1,1920x1080@60,4480x394,1"
+          ]
+        else
+          [ ",preferred,auto,1" ];
 
       general = {
         gaps_in = 4;
@@ -148,9 +162,9 @@ in
         "$mod, mouse_up, workspace, e-1"
 
         # スクリーンショット
-        "$mod SHIFT, S, exec, uwsm app -t service -- hyprshot -m region -o /mnt/hdd1/Pictures/Screenshots"
-        "$mod ALT SHIFT, S, exec, uwsm app -t service -- hyprshot -m window -o /mnt/hdd1/Pictures/Screenshots"
-        "$mod CTRL SHIFT, S, exec, uwsm app -t service -- hyprshot -m output -o /mnt/hdd1/Pictures/Screenshots"
+        "$mod SHIFT, S, exec, uwsm app -t service -- hyprshot -m region -o ${screenshotDirectory}"
+        "$mod ALT SHIFT, S, exec, uwsm app -t service -- hyprshot -m window -o ${screenshotDirectory}"
+        "$mod CTRL SHIFT, S, exec, uwsm app -t service -- hyprshot -m output -o ${screenshotDirectory}"
 
         # Hyprland システム
         "$mod SHIFT, R, exec, uwsm app -t service -- hyprctl reload"
@@ -188,7 +202,7 @@ in
         "uwsm app -t service -- foot --server"
       ];
 
-      windowrule = [
+      windowrule = lib.optionals (hostName == "attodesk") [
         "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, float on"
         "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, pin on"
         "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, move 0 0"

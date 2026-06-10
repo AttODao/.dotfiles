@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{
+  hostName,
+  pkgs,
+  ...
+}:
 let
   plymouthTheme = pkgs.callPackage ./plymouth-theme { };
 in
@@ -14,7 +18,7 @@ in
 
     consoleLogLevel = 3;
     initrd = {
-      kernelModules = [ "amdgpu" ];
+      kernelModules = if hostName == "attodesk" then [ "amdgpu" ] else [ ];
       verbose = false;
     };
     kernelParams = [

@@ -1,18 +1,31 @@
 {
   config,
+  hostName,
   lib,
   pkgs,
   ...
 }:
 
 let
+  monitorConfig =
+    if hostName == "attodesk" then
+      ''
+        monitor = DP-1, 2560x1440@60, 0x0, 1, bitdepth, 10, cm, hdr
+        monitor = HDMI-A-1, disable
+        monitor = HDMI-A-2, disable
+      ''
+    else
+      "monitor = , preferred, auto, 1";
+
   greeterCommand = pkgs.writeShellScript "regreet-hyprland" ''
     ${config.programs.regreet.package}/bin/regreet
     ${pkgs.hyprland}/bin/hyprctl dispatch exit || true
   '';
 
   greeterHyprlandConfig = pkgs.writeText "hyprland-greeter.conf" (
-    builtins.replaceStrings [ "@GREETER_COMMAND@" ] [ "${greeterCommand}" ] (
+    monitorConfig
+    + "\n"
+    + builtins.replaceStrings [ "@GREETER_COMMAND@" ] [ "${greeterCommand}" ] (
       builtins.readFile ./greeter/hyprland.conf
     )
   );

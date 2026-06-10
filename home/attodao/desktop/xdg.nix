@@ -1,5 +1,13 @@
-{ config, pkgs, ... }:
+{
+  config,
+  hostName,
+  lib,
+  pkgs,
+  ...
+}:
 let
+  homeDirectory = config.home.homeDirectory;
+  dataDirectory = if hostName == "attodesk" then "/mnt/hdd1" else homeDirectory;
   pcmanfmDesktopEntry = builtins.replaceStrings [ "@PCMANFM@" ] [ "${pkgs.pcmanfm}/bin/pcmanfm" ] (
     builtins.readFile ./xdg/pcmanfm.desktop
   );
@@ -15,20 +23,24 @@ let
       '';
 in
 {
+  home.file = lib.mkIf (hostName == "attolap") {
+    "Pictures/Screenshots/.keep".text = "";
+  };
+
   xdg = {
     enable = true;
 
     userDirs = {
       enable = true;
       createDirectories = true;
-      desktop = "${config.home.homeDirectory}/Desktop";
-      documents = "/mnt/hdd1/Documents";
-      download = "/mnt/hdd1/Downloads";
-      music = "/mnt/hdd1/Music";
-      pictures = "/mnt/hdd1/Pictures";
-      publicShare = "${config.home.homeDirectory}/Public";
-      templates = "${config.home.homeDirectory}/Templates";
-      videos = "/mnt/hdd1/Videos";
+      desktop = "${homeDirectory}/Desktop";
+      documents = "${dataDirectory}/Documents";
+      download = "${dataDirectory}/Downloads";
+      music = "${dataDirectory}/Music";
+      pictures = "${dataDirectory}/Pictures";
+      publicShare = "${homeDirectory}/Public";
+      templates = "${homeDirectory}/Templates";
+      videos = "${dataDirectory}/Videos";
     };
 
     dataFile."icons/hicolor/256x256/apps/pcmanfm.png".source = pcmanfmIcon;

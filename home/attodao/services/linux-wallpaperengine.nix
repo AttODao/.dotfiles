@@ -1,7 +1,12 @@
-{ config, pkgs, ... }:
+{
+  config,
+  hostName,
+  pkgs,
+  ...
+}:
 {
   services.linux-wallpaperengine = {
-    enable = true;
+    enable = hostName == "attodesk";
     package = pkgs.linux-wallpaperengine;
 
     assetsPath = "${config.home.homeDirectory}/.local/share/Steam/steamapps/common/wallpaper_engine/assets";
