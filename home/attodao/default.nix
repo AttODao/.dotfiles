@@ -23,6 +23,7 @@
     ./programs/open-deck-desktop.nix
     ./programs/ssh.nix
     ./programs/starship.nix
+    ./programs/thunderbird.nix
     ./programs/zsh.nix
     ./services/kando.nix
     ./services/solaar.nix

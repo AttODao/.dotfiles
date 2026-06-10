@@ -80,6 +80,7 @@
           "pcmanfm"
           "dev.zed.Zed"
           "floorp"
+          "thunderbird"
           "open-deck"
           "org.prismlauncher.PrismLauncher"
           "anime-game-launcher"
@@ -96,6 +97,20 @@
       weather = {
         enabled = true;
         unit = "celsius";
+      };
+
+      calendar = {
+        enabled = true;
+        refresh_minutes = 15;
+        account.sogo = {
+          type = "caldav";
+          name = "AttODesk";
+          color = "#3584e4";
+          provider = "custom";
+          server_url = "https://mail.attodao.cc/SOGo/dav/attodao@attodao.cc/Calendar/personal/";
+          username = "attodao@attodao.cc";
+          calendars = [ ];
+        };
       };
 
       location = {

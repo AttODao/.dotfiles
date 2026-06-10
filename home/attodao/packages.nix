@@ -4,6 +4,7 @@
     app2unit
     cloudflared
     kdePackages.ark
+    musescore
     nil
     nixd
     pcmanfm
