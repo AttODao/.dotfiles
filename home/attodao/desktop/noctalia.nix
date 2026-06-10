@@ -84,9 +84,9 @@
             "dev.zed.Zed"
             "floorp"
             "thunderbird"
+            "open-deck-desktop"
           ]
           ++ lib.optionals (hostName == "attodesk") [
-            "open-deck"
             "org.prismlauncher.PrismLauncher"
             "anime-game-launcher"
             "honkers-railway-launcher"

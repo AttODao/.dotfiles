@@ -27,6 +27,7 @@
       ./programs/apps.nix
       ./programs/foot.nix
       ./programs/floorp.nix
+      ./programs/open-deck-desktop.nix
       ./programs/ssh.nix
       ./programs/starship.nix
       ./programs/thunderbird.nix
@@ -34,7 +35,6 @@
       ./services/linux-wallpaperengine.nix
     ]
     ++ lib.optionals (hostName == "attodesk") [
-      ./programs/open-deck-desktop.nix
       ./services/kando.nix
       ./services/solaar.nix
     ];

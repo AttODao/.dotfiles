@@ -162,9 +162,9 @@ in
         "$mod, mouse_up, workspace, e-1"
 
         # スクリーンショット
-        "$mod SHIFT, S, exec, uwsm app -t service -- hyprshot -m region -o ${screenshotDirectory}"
-        "$mod ALT SHIFT, S, exec, uwsm app -t service -- hyprshot -m window -o ${screenshotDirectory}"
-        "$mod CTRL SHIFT, S, exec, uwsm app -t service -- hyprshot -m output -o ${screenshotDirectory}"
+        "$mod SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m region -o ${screenshotDirectory}"
+        "$mod ALT SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m window -o ${screenshotDirectory}"
+        "$mod CTRL SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m output -o ${screenshotDirectory}"
 
         # Hyprland システム
         "$mod SHIFT, R, exec, uwsm app -t service -- hyprctl reload"

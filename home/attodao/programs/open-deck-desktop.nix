@@ -2,9 +2,17 @@
 let
   openDeckAppImagePath = ".local/share/appimages/Open-Deck.AppImage";
   openDeckAppImageExec = "/home/attodao/${openDeckAppImagePath}";
-  openDeckDesktopEntry = builtins.replaceStrings [ "@OPEN_DECK_APPIMAGE@" ] [ openDeckAppImageExec ] (
-    builtins.readFile ./open-deck-desktop/open-deck-desktop.desktop
-  );
+  openDeckIconPath = "/home/attodao/.local/share/icons/hicolor/512x512/apps/open_deck_desktop.png";
+  openDeckDesktopEntry = builtins.replaceStrings
+    [
+      "@OPEN_DECK_APPIMAGE@"
+      "@OPEN_DECK_ICON@"
+    ]
+    [
+      openDeckAppImageExec
+      openDeckIconPath
+    ]
+    (builtins.readFile ./open-deck-desktop/open-deck-desktop.desktop);
   openDeckIcon = pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/kawa-nobu/Open-Deck-Desktop/Release/OpenDeck_App_Logo.png";
     hash = "sha256-WkBMqCSF8B6P8yNkAMt3VwzRHKaA6hhwqEn+qWavP8c=";

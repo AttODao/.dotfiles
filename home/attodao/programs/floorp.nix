@@ -1,6 +1,4 @@
 {
-  hostName,
-  lib,
   pkgs,
   ...
 }:
@@ -89,8 +87,7 @@
           Value = true;
           Status = "default";
         };
-      }
-      // lib.optionalAttrs (hostName == "attodesk") {
+
         "floorp.mousegesture.enabled" = {
           Value = true;
           Status = "default";
@@ -127,11 +124,14 @@
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/youtube-nonstop/latest.xpi";
         };
 
-      }
-      // lib.optionalAttrs (hostName == "attodesk") {
         "opd_release@kwdev" = {
           installation_mode = "force_installed";
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/open-deck/latest.xpi";
+        };
+
+        "{71e91189-9cd2-4e46-895d-bcc38f0053c4}" = {
+          installation_mode = "force_installed";
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/ttv-ab-twitch-ad-blocker/latest.xpi";
         };
       };
     };
