@@ -32,6 +32,11 @@
     ];
   };
 
+  systemd.tmpfiles.rules = [
+    "d /mnt/ssd1 0755 attodao users -"
+    "d /mnt/hdd1 0755 attodao users -"
+  ];
+
   services.btrfs.autoScrub = {
     enable = true;
     fileSystems = [

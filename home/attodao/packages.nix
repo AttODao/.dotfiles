@@ -16,9 +16,11 @@
       pcmanfm
       qt6Packages.qt6ct
       quickshell
+      ripgrep
       telegram-desktop
     ])
     ++ lib.optionals (hostName == "attodesk") [
+      pkgs.jdk25
       pkgs.protonup-qt
     ];
 }

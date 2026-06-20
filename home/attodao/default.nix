@@ -33,6 +33,7 @@
       ./programs/thunderbird.nix
       ./programs/zsh.nix
       ./services/linux-wallpaperengine.nix
+      ./services/nextcloud-client.nix
     ]
     ++ lib.optionals (hostName == "attodesk") [
       ./services/kando.nix
