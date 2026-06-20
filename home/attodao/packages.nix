@@ -10,6 +10,7 @@
       app2unit
       cloudflared
       kdePackages.ark
+      gh
       musescore
       nil
       nixd

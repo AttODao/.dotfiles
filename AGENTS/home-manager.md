@@ -40,9 +40,10 @@ Prefer conditional imports in `home/attodao/default.nix` for full modules, and `
 ## Programs And Services
 
 - `programs/apps.nix` enables Discord, OBS, Zed, and Prism Launcher.
+- `programs/prism-github-mods.nix` installs `prism-github-mods`, a Python helper for GitHub release mods in Prism Launcher instances. It keeps per-instance config under `~/.config/prism-github-mods/`, can import the old Ferium profile on first run, and refreshes tracked GitHub release jars directly from the latest release. It reuses `GITHUB_TOKEN`, `GH_TOKEN`, or `gh auth token` when available so authenticated GitHub access avoids rate limits.
 - `programs/ssh.nix` uses `cloudflared access ssh` for selected hosts.
 - `programs/thunderbird.nix` defines mail and calendar accounts without passwords.
-- `services/nextcloud-client.nix` starts Nextcloud on `attodesk` with:
+- `services/nextcloud-client.nix` starts Nextcloud on `attodesk` with the systemd user service and disables the XDG autostart desktop file to avoid duplicate launches:
   - server: `https://cloud.attodao.cc`
   - local directory: `/mnt/hdd1/nextcloud`
 - `services/kando.nix` and `services/solaar.nix` are `attodesk` only.
