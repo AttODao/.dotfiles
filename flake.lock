@@ -4,6 +4,7 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "nixpkgs": [
+          "deps",
           "nixpkgs"
         ],
         "rust-overlay": "rust-overlay"
@@ -21,6 +22,33 @@
         "repo": "aagl-gtk-on-nix",
         "type": "github"
       }
+    },
+    "deps": {
+      "inputs": {
+        "aagl": "aagl",
+        "home-manager": "home-manager",
+        "merge-ut-dictionaries": "merge-ut-dictionaries",
+        "mozcdic-ut-alt-cannadic": "mozcdic-ut-alt-cannadic",
+        "mozcdic-ut-edict2": "mozcdic-ut-edict2",
+        "mozcdic-ut-jawiki": "mozcdic-ut-jawiki",
+        "mozcdic-ut-neologd": "mozcdic-ut-neologd",
+        "mozcdic-ut-personal-names": "mozcdic-ut-personal-names",
+        "mozcdic-ut-place-names": "mozcdic-ut-place-names",
+        "mozcdic-ut-skk-jisyo": "mozcdic-ut-skk-jisyo",
+        "mozcdic-ut-sudachidict": "mozcdic-ut-sudachidict",
+        "nixpkgs": "nixpkgs",
+        "noctalia": "noctalia",
+        "noctalia-community-palettes": "noctalia-community-palettes"
+      },
+      "locked": {
+        "path": "./flake-inputs",
+        "type": "path"
+      },
+      "original": {
+        "path": "./flake-inputs",
+        "type": "path"
+      },
+      "parent": []
     },
     "flake-compat": {
       "flake": false,
@@ -41,6 +69,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
+          "deps",
           "nixpkgs"
         ]
       },
@@ -222,6 +251,7 @@
     "noctalia": {
       "inputs": {
         "nixpkgs": [
+          "deps",
           "nixpkgs"
         ]
       },
@@ -257,25 +287,13 @@
     },
     "root": {
       "inputs": {
-        "aagl": "aagl",
-        "home-manager": "home-manager",
-        "merge-ut-dictionaries": "merge-ut-dictionaries",
-        "mozcdic-ut-alt-cannadic": "mozcdic-ut-alt-cannadic",
-        "mozcdic-ut-edict2": "mozcdic-ut-edict2",
-        "mozcdic-ut-jawiki": "mozcdic-ut-jawiki",
-        "mozcdic-ut-neologd": "mozcdic-ut-neologd",
-        "mozcdic-ut-personal-names": "mozcdic-ut-personal-names",
-        "mozcdic-ut-place-names": "mozcdic-ut-place-names",
-        "mozcdic-ut-skk-jisyo": "mozcdic-ut-skk-jisyo",
-        "mozcdic-ut-sudachidict": "mozcdic-ut-sudachidict",
-        "nixpkgs": "nixpkgs",
-        "noctalia": "noctalia",
-        "noctalia-community-palettes": "noctalia-community-palettes"
+        "deps": "deps"
       }
     },
     "rust-overlay": {
       "inputs": {
         "nixpkgs": [
+          "deps",
           "aagl",
           "nixpkgs"
         ]

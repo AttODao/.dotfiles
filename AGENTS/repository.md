@@ -4,7 +4,8 @@ This is a Nix flake for two NixOS hosts and one Home Manager user.
 
 ## Entry Points
 
-- `flake.nix`: defines inputs, `nixosConfigurations`, and `homeConfigurations.attodao`.
+- `flake.nix`: defines outputs and depends on the local `flake-inputs` flake.
+- `flake-inputs/flake.nix`: centralizes flake input declarations.
 - `hosts/<host>/default.nix`: host-specific NixOS module list.
 - `modules/nixos/`: shared NixOS modules.
 - `home/attodao/default.nix`: Home Manager module list for user `attodao`.
@@ -22,6 +23,8 @@ Host-specific behavior should usually be expressed with `hostName == "attodesk"`
 ```text
 .
 ├── flake.nix
+├── flake-inputs/
+│   └── flake.nix
 ├── hosts/
 │   ├── attodesk/
 │   └── attolap/
