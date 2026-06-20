@@ -1,0 +1,300 @@
+{
+  "nodes": {
+    "aagl": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1780372639,
+        "narHash": "sha256-VFzXYHlIGwO4h4ovtnpZj9sX/Qu6+dlI00sXjHdwi2w=",
+        "owner": "ezKEa",
+        "repo": "aagl-gtk-on-nix",
+        "rev": "1ee1e8864a1fcfcc21a5fb5af4bd328b3c829f42",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ezKEa",
+        "repo": "aagl-gtk-on-nix",
+        "type": "github"
+      }
+    },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767039857,
+        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781906751,
+        "narHash": "sha256-6Ld1PqmptFtFKblE+SynhRgyBApUWcmrISetWqWHeeo=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "37f21dfa5d27e71b75bacd9418b156f9265e312e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "master",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "merge-ut-dictionaries": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780818002,
+        "narHash": "sha256-I2TGRZNdLwcnaDd/ARZ7AlIoQbwOE+2OWK+PYyIuFR8=",
+        "owner": "utuhiro78",
+        "repo": "merge-ut-dictionaries",
+        "rev": "15c1c64502b43e31d328012860376c03c3eaf633",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "merge-ut-dictionaries",
+        "type": "github"
+      }
+    },
+    "mozcdic-ut-alt-cannadic": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776637479,
+        "narHash": "sha256-IHU/I1zKUjcs7qnhndL+mZLp5vMM3E26OBy0zXwIbIk=",
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-alt-cannadic",
+        "rev": "08e033f4558b7a0b03d8ad6920216d9473f15627",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-alt-cannadic",
+        "type": "github"
+      }
+    },
+    "mozcdic-ut-edict2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780820288,
+        "narHash": "sha256-7HZXbchap7svwN7VEH2a618tIDgihfEqM7CFHMfAje8=",
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-edict2",
+        "rev": "d7279ba285fd5ddfe158b0bfd0c4fcda1f7b08c3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-edict2",
+        "type": "github"
+      }
+    },
+    "mozcdic-ut-jawiki": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780820043,
+        "narHash": "sha256-g7u4JFHOBYMCJKuB0AbDWlWPv6UWAS9gY4n08iSee8A=",
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-jawiki",
+        "rev": "b50cabaecaf32c03d102db55fc5d0b98e334ec9e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-jawiki",
+        "type": "github"
+      }
+    },
+    "mozcdic-ut-neologd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776637657,
+        "narHash": "sha256-N00QZ9p5loD/ld6D1BB85tK/rvarRylWVCJqpnz47Ck=",
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-neologd",
+        "rev": "d8307abf02b830b185c9320822cffa0d0787c54e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-neologd",
+        "type": "github"
+      }
+    },
+    "mozcdic-ut-personal-names": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780818121,
+        "narHash": "sha256-NPnSZR9JmhWV5PAb9BtcRlk0d/hS0Z9nni+sdnRJuSY=",
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-personal-names",
+        "rev": "5896ebef5f39d5772f4575fa05eb24436ce5a5f1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-personal-names",
+        "type": "github"
+      }
+    },
+    "mozcdic-ut-place-names": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780817911,
+        "narHash": "sha256-G4Q0bvgHlIxBBPvQY8Go1OtripI+D0gFS6nQ/X9F7OQ=",
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-place-names",
+        "rev": "6f9d9bda14f0bd2c10c1563d2aed9150ea95095c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-place-names",
+        "type": "github"
+      }
+    },
+    "mozcdic-ut-skk-jisyo": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776637637,
+        "narHash": "sha256-Ew8mzdhQHzCHSkwo9HzPKduSPrH0BZx/YNEsoOPLe3I=",
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-skk-jisyo",
+        "rev": "7c02e535bd6d999a715a53b58c3366f2401bfb7f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-skk-jisyo",
+        "type": "github"
+      }
+    },
+    "mozcdic-ut-sudachidict": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777808718,
+        "narHash": "sha256-xld6NgYKQkidLY0Wu1Nc0Jeab1r3g2QM6Hfgo2eR49c=",
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-sudachidict",
+        "rev": "7def3da408b1854801bd5b559273f9fb8001ef5b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "utuhiro78",
+        "repo": "mozcdic-ut-sudachidict",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1781928761,
+        "narHash": "sha256-yTGdFHqDMAxePV65dmx899CRyvA10zuO86MB7Xd/3I4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "aa6bba5ac74226cc0efb86d454c8b00f0cea0d53",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "noctalia": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781914872,
+        "narHash": "sha256-S2vKE2KjR2Aw6UBwOCxIeua40sjQ1PcU8gJk4jgXp68=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia-shell",
+        "rev": "a7af75821ed8aa9e199b0d8044362dc882c78fbc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia-shell",
+        "type": "github"
+      }
+    },
+    "noctalia-community-palettes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1781791203,
+        "narHash": "sha256-qeXA+j/aDYTBYlc3SgoOc6Z0UDEnNBNeebLJolBlBGs=",
+        "owner": "noctalia-dev",
+        "repo": "community-palettes",
+        "rev": "cb0cb727166164eab5541d9fc9d30fc9b66a6be4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "community-palettes",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "aagl": "aagl",
+        "home-manager": "home-manager",
+        "merge-ut-dictionaries": "merge-ut-dictionaries",
+        "mozcdic-ut-alt-cannadic": "mozcdic-ut-alt-cannadic",
+        "mozcdic-ut-edict2": "mozcdic-ut-edict2",
+        "mozcdic-ut-jawiki": "mozcdic-ut-jawiki",
+        "mozcdic-ut-neologd": "mozcdic-ut-neologd",
+        "mozcdic-ut-personal-names": "mozcdic-ut-personal-names",
+        "mozcdic-ut-place-names": "mozcdic-ut-place-names",
+        "mozcdic-ut-skk-jisyo": "mozcdic-ut-skk-jisyo",
+        "mozcdic-ut-sudachidict": "mozcdic-ut-sudachidict",
+        "nixpkgs": "nixpkgs",
+        "noctalia": "noctalia",
+        "noctalia-community-palettes": "noctalia-community-palettes"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "aagl",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1780197589,
+        "narHash": "sha256-FVCr2Ij/jKf59a4LW481eeOF6rJRreOBrVgW/aUBTrw=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "21632e942d89bf1cce4e5a63d7e58a215a0cbfcc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
