@@ -6,6 +6,8 @@
 }:
 let
   mod = "SUPER";
+  cursorTheme = "Yanfei-Cursors";
+  cursorSize = "48";
   noctalia = cmd: "noctalia msg ${cmd}";
   screenshotDirectory =
     if hostName == "attodesk" then
@@ -33,10 +35,10 @@ in
 
       env = [
         "ELECTRON_OZONE_PLATFORM_HINT,auto"
-        "XCURSOR_THEME,Bibata-Modern-Ice"
-        "XCURSOR_SIZE,24"
-        "HYPRCURSOR_THEME,Bibata-Modern-Ice"
-        "HYPRCURSOR_SIZE,24"
+        "XCURSOR_THEME,${cursorTheme}"
+        "XCURSOR_SIZE,${cursorSize}"
+        "HYPRCURSOR_THEME,${cursorTheme}"
+        "HYPRCURSOR_SIZE,${cursorSize}"
       ];
 
       monitor =

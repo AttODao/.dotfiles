@@ -1,6 +1,7 @@
 {
   config,
   hostName,
+  lib,
   pkgs,
   ...
 }:
@@ -30,4 +31,11 @@
       }
     ];
   };
+
+  systemd.user.services.linux-wallpaperengine.Service.Environment = lib.mkIf (hostName == "attodesk") [
+    "XCURSOR_THEME=Yanfei-Cursors"
+    "XCURSOR_SIZE=48"
+    "HYPRCURSOR_THEME=Yanfei-Cursors"
+    "HYPRCURSOR_SIZE=48"
+  ];
 }
