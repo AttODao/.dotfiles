@@ -68,8 +68,27 @@
         format = "[[($all_status$ahead_behind )](fg:color_fg0 bg:color_aqua)]($style)";
       };
 
+      c = {
+        symbol = "";
+        style = "bg:color_blue";
+        format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+      };
+
+      cpp = {
+        disabled = false;
+        symbol = "";
+        style = "bg:color_blue";
+        format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+      };
+
       nodejs = {
         symbol = "";
+        style = "bg:color_blue";
+        format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+      };
+
+      bun = {
+        symbol = "";
         style = "bg:color_blue";
         format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
       };
@@ -92,10 +111,46 @@
         format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
       };
 
+      php = {
+        symbol = "";
+        style = "bg:color_blue";
+        format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+      };
+
+      java = {
+        symbol = "";
+        style = "bg:color_blue";
+        format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+      };
+
+      kotlin = {
+        symbol = "";
+        style = "bg:color_blue";
+        format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+      };
+
+      haskell = {
+        symbol = "";
+        style = "bg:color_blue";
+        format = "[[ $symbol( $version) ](fg:color_fg0 bg:color_blue)]($style)";
+      };
+
       docker_context = {
         symbol = "";
         style = "bg:color_bg3";
         format = "[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)";
+      };
+
+      conda = {
+        symbol = "";
+        style = "bg:color_bg3";
+        format = "[[ $symbol $environment ](fg:color_fg0 bg:color_bg3)]($style)";
+      };
+
+      pixi = {
+        symbol = "󰏗";
+        style = "bg:color_bg3";
+        format = "[[ $symbol( $version)( $environment) ](fg:color_fg0 bg:color_bg3)]($style)";
       };
 
       time = {

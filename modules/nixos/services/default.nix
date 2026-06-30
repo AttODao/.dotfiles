@@ -6,5 +6,9 @@
     };
 
     openssh.enable = true;
+    tailscale = {
+      enable = true;
+      extraUpFlags = [ "--accept-routes" ];
+    };
   };
 }

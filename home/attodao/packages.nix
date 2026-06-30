@@ -8,9 +8,9 @@
   home.packages =
     (with pkgs; [
       app2unit
-      cloudflared
       kdePackages.ark
       gh
+      mission-center
       musescore
       nil
       nixd

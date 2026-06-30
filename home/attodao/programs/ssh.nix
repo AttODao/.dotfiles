@@ -1,11 +1,4 @@
-{ pkgs, ... }:
-let
-  cloudflared = "${pkgs.cloudflared}/bin/cloudflared";
-
-  cloudflareTunnelSsh = {
-    proxyCommand = "${cloudflared} access ssh --hostname %h";
-  };
-in
+{ ... }:
 {
   programs.ssh = {
     enable = true;
@@ -16,27 +9,45 @@ in
         ForwardAgent = false;
         AddKeysToAgent = "no";
         Compression = false;
-        ServerAliveInterval = 0;
-        ServerAliveCountMax = 3;
+        StrictHostKeyChecking = "accept-new";
+        Port = 22;
         HashKnownHosts = false;
         UserKnownHostsFile = "~/.ssh/known_hosts";
-        ControlMaster = "no";
-        ControlPath = "~/.ssh/master-%r@%n:%p";
-        ControlPersist = "no";
+        ControlMaster = "auto";
+        ControlPersist = "10m";
+        ControlPath = "~/.ssh/cm-%C";
+        ServerAliveInterval = 30;
+        ServerAliveCountMax = 3;
       };
 
-      attobox = cloudflareTunnelSsh // {
-        HostName = "attobox.attodao.cc";
+      attobox = {
         User = "attodao";
+        Port = 22;
+        HostName = "attobox";
       };
 
-      attofort = cloudflareTunnelSsh // {
-        HostName = "attofort.attodao.cc";
+      attofort = {
         User = "attodao";
+        Port = 22;
+        HostName = "attofort";
       };
 
-      "git.attodao.cc" = cloudflareTunnelSsh // {
+      devcon = {
+        User = "dev";
+        Port = 22;
+        HostName = "devcon";
+      };
+
+      desktop = {
+        User = "attodao";
+        Port = 22;
+        HostName = "desktop";
+      };
+
+      "git.attodao.cc" = {
+        Port = 22;
         HostName = "git.attodao.cc";
+        User = "git";
         IdentityFile = [ "~/.ssh/id_ed25519_forgejo" ];
         IdentitiesOnly = true;
       };

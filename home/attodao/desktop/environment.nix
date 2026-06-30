@@ -10,7 +10,7 @@ let
     version = "1.0";
     src = pkgs.fetchurl {
       name = "yanfei-cursors.zip";
-      url = "https://cloud.attodao.cc/public.php/dav/files/CdNGeLmjbEYXrTA?accept=zip";
+      url = "https://cloud.attodao.cc/public.php/dav/files/PadkpSHqECcxdDf/?accept=zip";
       hash = "sha256-08r0SDIae49g1dQHvNFgYyvCUwcxD13wHGz3Grb1h8w=";
     };
     nativeBuildInputs = [

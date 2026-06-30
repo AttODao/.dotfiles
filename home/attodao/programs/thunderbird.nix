@@ -11,7 +11,6 @@
         "attodao"
         "gmail"
       ];
-      calendarAccountsOrder = [ "sogo" ];
       settings = {
         "mail.spellcheck.inline" = true;
         "mailnews.start_page.enabled" = false;
@@ -54,24 +53,6 @@
         realName = "AttODao";
         flavor = "gmail.com";
         thunderbird.enable = true;
-      };
-    };
-
-    calendar.accounts.sogo = {
-      primary = true;
-      remote = {
-        type = "caldav";
-        url = "https://mail.attodao.cc/SOGo/dav/attodao@attodao.cc/Calendar/personal/";
-        userName = "attodao@attodao.cc";
-      };
-      thunderbird = {
-        enable = true;
-        color = "#3584e4";
-        settings = id: {
-          "calendar.registry.calendar_${id}.imip.identity.key" =
-            "id_${builtins.hashString "sha256" "attodao"}";
-          "calendar.registry.calendar_${id}.refreshInterval" = 15;
-        };
       };
     };
   };
