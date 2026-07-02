@@ -28,6 +28,12 @@
     ../../modules/nixos/security/login-pin.nix
   ];
 
+  # OpenCloud Desktop reads this on Linux to prefill the server URL wizard.
+  environment.etc."OpenCloud/OpenCloud.conf".text = ''
+    [Wizard]
+    ServerUrl=https://cloud.attodao.cc
+  '';
+
   attodao.loginPin = {
     enable = true;
     users = [ "attodao" ];

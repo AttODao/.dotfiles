@@ -24,7 +24,7 @@ Current areas:
 
 Use `hostName` for user-level differences:
 
-- `attodesk`: `/mnt/hdd1` user directories, fixed monitor layout, Kando, Solaar, Wallpaper Engine, Nextcloud, extra game launchers.
+- `attodesk`: `/mnt/hdd1` user directories, fixed monitor layout, Kando, Solaar, Wallpaper Engine, OpenCloud, extra game launchers.
 - `attolap`: default monitor, home-directory user folders, no desktop-only daemons.
 
 Prefer conditional imports in `home/attodao/default.nix` for full modules, and `lib.optionals` or `lib.mkIf` inside modules for small differences.
@@ -43,7 +43,6 @@ Prefer conditional imports in `home/attodao/default.nix` for full modules, and `
 - `programs/prism-github-mods.nix` installs `prism-github-mods`, a Python helper for GitHub release mods in Prism Launcher instances. It keeps per-instance config under `~/.config/prism-github-mods/`, can import the old Ferium profile on first run, and refreshes tracked GitHub release jars directly from the latest release. It reuses `GITHUB_TOKEN`, `GH_TOKEN`, or `gh auth token` when available so authenticated GitHub access avoids rate limits.
 - `programs/ssh.nix` uses `cloudflared access ssh` for selected hosts.
 - `programs/thunderbird.nix` defines mail and calendar accounts without passwords.
-- `services/nextcloud-client.nix` starts Nextcloud on `attodesk` with the systemd user service and disables the XDG autostart desktop file to avoid duplicate launches:
+- `services/opencloud-client.nix` starts OpenCloud on `attodesk` with a systemd user service, and `/etc/OpenCloud/OpenCloud.conf` preconfigures the server URL:
   - server: `https://cloud.attodao.cc`
-  - local directory: `/mnt/hdd1/nextcloud`
 - `services/kando.nix` and `services/solaar.nix` are `attodesk` only.

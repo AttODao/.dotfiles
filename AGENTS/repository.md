@@ -13,7 +13,7 @@ This is a Nix flake for two NixOS hosts and one Home Manager user.
 
 ## Hosts
 
-- `attodesk`: desktop machine. Uses AAGL, extra Btrfs mounts, multi-monitor Hyprland config, Kando, Solaar, Wallpaper Engine, Nextcloud, and game launchers.
+- `attodesk`: desktop machine. Uses AAGL, extra Btrfs mounts, multi-monitor Hyprland config, Kando, Solaar, Wallpaper Engine, OpenCloud, and game launchers.
 - `attolap`: laptop. Uses the shared module set with laptop power services. Its `hardware-configuration.nix` is currently a placeholder until generated on the machine.
 
 Host-specific behavior should usually be expressed with `hostName == "attodesk"` or `hostName == "attolap"` inside shared modules. Add a new host-specific module only when the behavior is large or clearly isolated.

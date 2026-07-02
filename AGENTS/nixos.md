@@ -30,6 +30,6 @@ NixOS configuration is assembled from `hosts/<host>/default.nix`.
 ## Current Host-Specific Details
 
 - `attodesk` maps `mail.attodao.cc` to `192.168.0.100`.
-- `attodesk` uses `/mnt/hdd1` for user data directories and `/mnt/hdd1/nextcloud` for Nextcloud sync.
+- `attodesk` uses `/mnt/hdd1` for user data directories and `/etc/OpenCloud/OpenCloud.conf` to prefill the OpenCloud Desktop server URL.
 - `attodesk` has Logitech graphical support, Kando, Solaar, StreamController, and extra launchers.
 - `attolap` uses laptop power services: `power-profiles-daemon` and `upower`.
