@@ -1,14 +1,20 @@
 {
   hostName,
+  lib,
   pkgs,
   ...
 }:
 let
   plymouthTheme = pkgs.callPackage ./plymouth-theme { };
+  desktopPerformanceKernelParams = lib.optionals (hostName == "attodesk") [
+    # Desktop-only throughput tuning.
+    "mitigations=off"
+    "nowatchdog"
+  ];
 in
 {
   boot = {
-    kernelPackages = pkgs.linuxPackages_xanmod_latest;
+    kernelPackages = pkgs.linuxPackages_zen;
 
     plymouth = {
       enable = true;
@@ -25,7 +31,7 @@ in
       "quiet"
       "udev.log_level=3"
       "rd.systemd.show_status=auto"
-    ];
+    ] ++ desktopPerformanceKernelParams;
 
     loader = {
       systemd-boot.enable = false;
@@ -37,5 +43,9 @@ in
 
       efi.canTouchEfiVariables = true;
     };
+  };
+
+  powerManagement = lib.mkIf (hostName == "attodesk") {
+    cpuFreqGovernor = "performance";
   };
 }

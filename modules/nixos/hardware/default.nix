@@ -20,6 +20,8 @@
     };
   };
 
+  services.thermald.enable = true;
+
   services.udev.packages = [
     pkgs.game-devices-udev-rules
   ];
