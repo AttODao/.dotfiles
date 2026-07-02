@@ -1,56 +1,62 @@
-{ ... }:
+{ config, lib, pkgs, ... }:
+let
+  sshConfig = pkgs.writeText "attodao-ssh-config" ''
+    Host *
+      ForwardAgent no
+      AddKeysToAgent no
+      Compression no
+      StrictHostKeyChecking accept-new
+      Port 22
+      HashKnownHosts no
+      UserKnownHostsFile ~/.ssh/known_hosts
+      ControlMaster auto
+      ControlPersist 10m
+      ControlPath ~/.ssh/cm-%C
+      ServerAliveInterval 30
+      ServerAliveCountMax 3
+
+    Host attobox
+      User attodao
+      Port 22
+      HostName attobox
+
+    Host attofort
+      User attodao
+      Port 22
+      HostName attofort
+
+    Host devcon
+      User dev
+      Port 22
+      HostName devcon
+
+    Host desktop
+      User attodao
+      Port 22
+      HostName desktop
+
+    Host git.attodao.cc
+      Port 22
+      HostName git.attodao.cc
+      User git
+      IdentityFile ~/.ssh/id_ed25519_forgejo
+      IdentitiesOnly yes
+  '';
+
+  sshDir = "${config.home.homeDirectory}/.ssh";
+  sshConfigPath = "${sshDir}/config";
+  sshWrapper = pkgs.writeShellScriptBin "ssh" ''
+    set -eu
+    exec ${pkgs.openssh}/bin/ssh -F "$HOME/.ssh/config" "$@"
+  '';
+in
 {
-  programs.ssh = {
-    enable = true;
-    enableDefaultConfig = false;
+  # Keep Zed and shell SSH calls on the managed config instead of the system include tree.
+  home.packages = [ sshWrapper ];
 
-    settings = {
-      "*" = {
-        ForwardAgent = false;
-        AddKeysToAgent = "no";
-        Compression = false;
-        StrictHostKeyChecking = "accept-new";
-        Port = 22;
-        HashKnownHosts = false;
-        UserKnownHostsFile = "~/.ssh/known_hosts";
-        ControlMaster = "auto";
-        ControlPersist = "10m";
-        ControlPath = "~/.ssh/cm-%C";
-        ServerAliveInterval = 30;
-        ServerAliveCountMax = 3;
-      };
-
-      attobox = {
-        User = "attodao";
-        Port = 22;
-        HostName = "attobox";
-      };
-
-      attofort = {
-        User = "attodao";
-        Port = 22;
-        HostName = "attofort";
-      };
-
-      devcon = {
-        User = "dev";
-        Port = 22;
-        HostName = "devcon";
-      };
-
-      desktop = {
-        User = "attodao";
-        Port = 22;
-        HostName = "desktop";
-      };
-
-      "git.attodao.cc" = {
-        Port = 22;
-        HostName = "git.attodao.cc";
-        User = "git";
-        IdentityFile = [ "~/.ssh/id_ed25519_forgejo" ];
-        IdentitiesOnly = true;
-      };
-    };
-  };
+  # OpenSSH rejects the Home Manager store symlink, so write a real user-owned file.
+  home.activation.installSshConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ${pkgs.coreutils}/bin/install -d -m 700 "${sshDir}"
+    ${pkgs.coreutils}/bin/install -m 600 ${sshConfig} "${sshConfigPath}"
+  '';
 }

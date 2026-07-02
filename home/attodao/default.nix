@@ -27,6 +27,7 @@
     ./programs/foot.nix
     ./programs/floorp.nix
     ./programs/open-deck-desktop.nix
+    ./programs/pipeasio.nix
     ./programs/prismgh.nix
     ./programs/ssh.nix
     ./programs/starship.nix

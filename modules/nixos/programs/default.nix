@@ -2,6 +2,7 @@
   imports = [
     ./nix-ld.nix
     ./steam.nix
+    ./pipeasio.nix
   ];
 
   programs = {
