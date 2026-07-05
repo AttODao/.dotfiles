@@ -1,4 +1,8 @@
 {
+  config,
+  ...
+}:
+{
   programs = {
     discord.enable = true;
     obs-studio.enable = true;
@@ -16,5 +20,23 @@
         MaxMemAlloc = 16384;
       };
     };
+  };
+
+  systemd.user.services.discord = {
+    Unit = {
+      Description = "Discord desktop client";
+      After = [
+        "graphical-session.target"
+        "fcitx5.service"
+      ];
+    };
+
+    Service = {
+      ExecStart = "${config.programs.discord.package}/bin/discord --start-minimized";
+      Restart = "on-failure";
+      RestartSec = 3;
+    };
+
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 }

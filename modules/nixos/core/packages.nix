@@ -24,6 +24,7 @@ in
       curl
       fastfetch
       git
+      android-tools
       python3WithPackages
       seahorse
       unzip

@@ -26,12 +26,6 @@ in
       }
       {
         command = [
-          "fcitx5"
-          "-r"
-        ];
-      }
-      {
-        command = [
           "foot"
           "--server"
         ];

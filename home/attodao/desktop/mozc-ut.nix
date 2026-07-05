@@ -77,4 +77,20 @@ in
       ];
     };
   };
+
+  # Start fcitx5 as a user service so app autostarts do not race it at session start.
+  systemd.user.services.fcitx5 = {
+    Unit = {
+      Description = "Fcitx5 input method";
+      After = [ "graphical-session.target" ];
+    };
+
+    Service = {
+      ExecStart = "${pkgs.fcitx5}/bin/fcitx5 -r";
+      Restart = "on-failure";
+      RestartSec = 3;
+    };
+
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 }

@@ -63,6 +63,11 @@ in
   '';
 
   home.file.".xprofile".text = ''
+    export XMODIFIERS=@im=fcitx
+    export GTK_IM_MODULE=fcitx
+    export QT_IM_MODULE=fcitx
+    export SDL_IM_MODULE=fcitx
+
     export XCURSOR_THEME=${cursorTheme}
     export XCURSOR_SIZE=${toString cursorSize}
     export HYPRCURSOR_THEME=${cursorTheme}
@@ -89,6 +94,11 @@ in
   };
 
   home.sessionVariables = {
+    XMODIFIERS = "@im=fcitx";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    SDL_IM_MODULE = "fcitx";
+
     XCURSOR_THEME = cursorTheme;
     XCURSOR_SIZE = toString cursorSize;
     HYPRCURSOR_THEME = cursorTheme;
@@ -96,6 +106,11 @@ in
   };
 
   systemd.user.sessionVariables = {
+    XMODIFIERS = "@im=fcitx";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    SDL_IM_MODULE = "fcitx";
+
     XCURSOR_THEME = cursorTheme;
     XCURSOR_SIZE = toString cursorSize;
     HYPRCURSOR_THEME = cursorTheme;

@@ -109,10 +109,10 @@
         refresh_minutes = 15;
         account.sogo = {
           type = "caldav";
-          name = "AttODesk";
+          name = "AttODao";
           color = "#3584e4";
           provider = "custom";
-          server_url = "https://mail.attodao.cc/SOGo/dav/attodao@attodao.cc/Calendar/personal/";
+          server_url = "https://mail.attodao.cc/radicale/";
           username = "attodao@attodao.cc";
           calendars = [ ];
         };

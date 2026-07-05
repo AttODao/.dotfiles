@@ -5,8 +5,11 @@ let
     destination = "/bin/pipeasio-register-steam-prefixes";
     executable = true;
     text = builtins.replaceStrings
-      [ "@PYTHON@" ]
-      [ "${pkgs.python3}/bin/python3" ]
+      [ "@PYTHON@" "@WINE@" ]
+      [
+        "${pkgs.python3}/bin/python3"
+        "${pkgs.wineWow64Packages.stable}/bin/wine"
+      ]
       (builtins.readFile ./pipeasio/register-steam-prefixes.py);
   };
 in
@@ -18,6 +21,6 @@ in
   ];
 
   home.activation.registerPipeasioSteamPrefixes = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    ${registerSteamPrefixes}/bin/pipeasio-register-steam-prefixes
+    ${registerSteamPrefixes}/bin/pipeasio-register-steam-prefixes --skip-registered
   '';
 }

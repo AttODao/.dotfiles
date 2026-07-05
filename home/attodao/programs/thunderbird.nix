@@ -1,4 +1,13 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
+let
+  thunderbirdMinimizeOnStartupAddon = pkgs.runCommandLocal "thunderbird-minimize-on-startup" { } ''
+    install -Dm444 ${pkgs.fetchurl {
+      url = "https://addons.thunderbird.net/thunderbird/downloads/file/1030065/minimize_on_startup-1.1-tb.xpi?src=search";
+      hash = "sha256-Q6YeL6JSFQDy3Vt8WbIIoEI6paJ1uzgejVskwaujQb0=";
+    }} \
+      "$out/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/mas@aandrzej.com.xpi"
+  '';
+in
 {
   programs.thunderbird = {
     enable = true;
@@ -12,9 +21,11 @@
         "gmail"
       ];
       settings = {
+        "extensions.autoDisableScopes" = 0;
         "mail.spellcheck.inline" = true;
         "mailnews.start_page.enabled" = false;
       };
+      extensions = [ thunderbirdMinimizeOnStartupAddon ];
     };
   };
 
@@ -55,5 +66,23 @@
         thunderbird.enable = true;
       };
     };
+  };
+
+  systemd.user.services.thunderbird = {
+    Unit = {
+      Description = "Thunderbird mail client";
+      After = [
+        "graphical-session.target"
+        "fcitx5.service"
+      ];
+    };
+
+    Service = {
+      ExecStart = "${config.programs.thunderbird.package}/bin/thunderbird";
+      Restart = "on-failure";
+      RestartSec = 3;
+    };
+
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 }

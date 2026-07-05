@@ -1,6 +1,7 @@
 #!/usr/bin/env @PYTHON@
 from __future__ import annotations
 
+import argparse
 import os
 import re
 import subprocess
@@ -9,6 +10,9 @@ from pathlib import Path
 
 
 PIPEASIO_REGISTER = Path("/run/current-system/sw/bin/pipeasio-register")
+WINE = Path("@WINE@")
+PIPEASIO_REGISTRY_KEY = r"HKLM\Software\ASIO\PipeASIO"
+PIPEASIO_REGISTRY_CLSID = "{2D3CA9E2-1193-4C5D-B5FD-38798F3DC074}"
 DEFAULT_STEAM_ROOTS = [
     Path.home() / ".local/share/Steam",
     Path.home() / ".steam/steam",
@@ -94,6 +98,36 @@ def prefixes() -> list[Path]:
     return found
 
 
+def prefix_is_registered(prefix: Path) -> bool:
+    env = os.environ.copy()
+    env["WINEPREFIX"] = str(prefix)
+
+    try:
+        result = subprocess.run(
+            [
+                str(WINE),
+                "reg",
+                "query",
+                PIPEASIO_REGISTRY_KEY,
+                "/v",
+                "CLSID",
+            ],
+            env=env,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError as exc:
+        eprint(f"pipeasio: could not query registry for {prefix}: {exc}")
+        return False
+
+    if result.returncode != 0:
+        return False
+
+    output = f"{result.stdout}\n{result.stderr}".lower()
+    return PIPEASIO_REGISTRY_CLSID.lower() in output
+
+
 def register_prefix(prefix: Path) -> bool:
     eprint(f"pipeasio: registering {prefix}")
     env = os.environ.copy()
@@ -108,6 +142,16 @@ def register_prefix(prefix: Path) -> bool:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Register PipeASIO in the Steam Proton prefixes on this system."
+    )
+    parser.add_argument(
+        "--skip-registered",
+        action="store_true",
+        help="Skip prefixes that already have PipeASIO registered.",
+    )
+    args = parser.parse_args()
+
     if not PIPEASIO_REGISTER.is_file():
         eprint(f"pipeasio: missing {PIPEASIO_REGISTER}")
         return 1
@@ -119,13 +163,21 @@ def main() -> int:
 
     registered = 0
     failed = 0
+    skipped = 0
     for prefix in steam_prefixes:
+        if args.skip_registered and prefix_is_registered(prefix):
+            skipped += 1
+            eprint(f"pipeasio: already registered in {prefix}, skipping")
+            continue
+
         if register_prefix(prefix):
             registered += 1
         else:
             failed += 1
 
     eprint(f"pipeasio: registered {registered} Steam prefixes")
+    if skipped:
+        eprint(f"pipeasio: skipped {skipped} already registered prefix(es)")
     if failed:
         eprint(f"pipeasio: {failed} prefix(es) failed, see messages above")
     return 0

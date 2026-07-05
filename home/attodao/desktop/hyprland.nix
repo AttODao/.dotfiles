@@ -200,7 +200,6 @@ in
 
       exec-once = [
         "uwsm app -t service -- noctalia"
-        "uwsm app -t service -- fcitx5 -r"
         "uwsm app -t service -- foot --server"
       ];
 
