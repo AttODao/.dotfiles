@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
   thunderbirdMinimizeOnStartupAddon = pkgs.runCommandLocal "thunderbird-minimize-on-startup" { } ''
     install -Dm444 ${pkgs.fetchurl {
@@ -68,21 +68,4 @@ in
     };
   };
 
-  systemd.user.services.thunderbird = {
-    Unit = {
-      Description = "Thunderbird mail client";
-      After = [
-        "graphical-session.target"
-        "fcitx5.service"
-      ];
-    };
-
-    Service = {
-      ExecStart = "${config.programs.thunderbird.package}/bin/thunderbird";
-      Restart = "on-failure";
-      RestartSec = 3;
-    };
-
-    Install.WantedBy = [ "graphical-session.target" ];
-  };
 }

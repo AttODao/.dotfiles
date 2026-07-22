@@ -11,23 +11,15 @@
       enable = true;
       userSettings.autosave = "on_focus_change";
     };
-
-    prismlauncher = {
-      enable = true;
-
-      settings = {
-        MinMemAlloc = 4096;
-        MaxMemAlloc = 16384;
-      };
-    };
   };
 
   systemd.user.services.discord = {
     Unit = {
       Description = "Discord desktop client";
+      Wants = [ "fcitx5-daemon.service" ];
       After = [
         "graphical-session.target"
-        "fcitx5.service"
+        "fcitx5-daemon.service"
       ];
     };
 

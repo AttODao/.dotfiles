@@ -64,7 +64,6 @@ in
 
   home.file.".xprofile".text = ''
     export XMODIFIERS=@im=fcitx
-    export GTK_IM_MODULE=fcitx
     export QT_IM_MODULE=fcitx
     export SDL_IM_MODULE=fcitx
 
@@ -95,7 +94,6 @@ in
 
   home.sessionVariables = {
     XMODIFIERS = "@im=fcitx";
-    GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     SDL_IM_MODULE = "fcitx";
 
@@ -107,7 +105,6 @@ in
 
   systemd.user.sessionVariables = {
     XMODIFIERS = "@im=fcitx";
-    GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     SDL_IM_MODULE = "fcitx";
 

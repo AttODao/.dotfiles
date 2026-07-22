@@ -9,7 +9,9 @@
     (with pkgs; [
       app2unit
       kdePackages.ark
+      celluloid
       gh
+      loupe
       mission-center
       musescore
       nil

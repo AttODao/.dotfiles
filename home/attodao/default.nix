@@ -28,7 +28,7 @@
     ./programs/floorp.nix
     ./programs/open-deck-desktop.nix
     ./programs/pipeasio.nix
-    ./programs/prismgh.nix
+    ./programs/pandora-launcher.nix
     ./programs/ssh.nix
     ./programs/starship.nix
     ./programs/thunderbird.nix
@@ -38,6 +38,7 @@
   ]
   ++ lib.optionals (hostName == "attodesk") [
     ./services/kando.nix
+    ./services/musescore-midi.nix
     ./services/solaar.nix
   ];
 

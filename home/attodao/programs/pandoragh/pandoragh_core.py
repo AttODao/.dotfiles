@@ -18,12 +18,11 @@ from pathlib import Path
 from zipfile import BadZipFile, ZipFile
 
 
-APP_NAME = "prism-github-mods"
+APP_NAME = "pandora-github-mods"
 CONFIG_VERSION = 1
 GITHUB_API_VERSION = "2022-11-28"
-CONFIG_ROOT_ENV = "PRISM_GITHUB_MODS_CONFIG_DIR"
-INSTANCE_ROOT_ENV = "PRISM_LAUNCHER_INSTANCES_DIR"
-LEGACY_CONFIG_SUBDIR = Path("ferium") / "prism"
+CONFIG_ROOT_ENV = "PANDORA_GITHUB_MODS_CONFIG_DIR"
+INSTANCE_ROOT_ENV = "PANDORA_LAUNCHER_INSTANCES_DIR"
 
 LOADER_MAP = {
     "net.fabricmc.fabric-loader": "fabric",
@@ -93,28 +92,6 @@ class ModRecord:
             version=normalize_version(as_text(value.get("version"))),
         )
 
-    @classmethod
-    def from_legacy(cls, value: object) -> ModRecord | None:
-        if not isinstance(value, dict):
-            return None
-
-        identifier = value.get("identifier", {})
-        if not isinstance(identifier, dict):
-            return None
-
-        repo = identifier.get("GitHubRepository")
-        if not isinstance(repo, list) or len(repo) != 2:
-            return None
-
-        owner, name = repo
-        if not isinstance(owner, str) or not isinstance(name, str):
-            return None
-
-        return cls(
-            repo=normalize_repo_spec(f"{owner}/{name}"),
-            display_name=as_text(value.get("name")),
-        )
-
     def to_config(self) -> dict[str, str]:
         data = {"repo": self.repo}
         for key in ("display_name", "mod_id", "asset_name", "version"):
@@ -139,19 +116,12 @@ class ModRecord:
 class Profile:
     config_file: Path
     mods: list[ModRecord]
-    migrated: bool = False
 
     @classmethod
     def load(cls, instance: Instance) -> Profile:
         config_file = profile_config_file(instance.directory)
         if config_file.is_file():
-            return cls(config_file, load_mods_config(config_file), False)
-
-        legacy_file = legacy_profile_config_file(instance.directory)
-        if legacy_file.is_file():
-            profile = cls(config_file, load_legacy_mods(legacy_file, instance.mods_dir), True)
-            profile.save()
-            return profile
+            return cls(config_file, load_mods_config(config_file))
 
         profile = cls(config_file, [])
         profile.save()
@@ -259,39 +229,30 @@ class JarIndex:
         asset_name = record.asset_name.lower() if record.asset_name else None
 
         matches: list[Path] = []
-        for jar in sorted(self.mods_dir.glob("*.jar")):
-            stem = jar.stem.lower()
-            if asset_name and jar.name.lower() == asset_name:
-                matches.append(jar)
-                continue
-            if mod_id and (stem == mod_id or stem.startswith(mod_id)):
-                matches.append(jar)
-                continue
-            if stem == slug or stem.startswith(slug):
-                matches.append(jar)
-                continue
-
-            jar_mod_id, _ = self.metadata(jar)
-            if jar_mod_id:
-                jar_mod_id = jar_mod_id.lower()
-                if jar_mod_id == slug or (mod_id and jar_mod_id == mod_id):
-                    matches.append(jar)
-
+        for jar in self.mods_dir.glob("*.jar"):
+            jar_slug = jar.stem.lower()
+            if slug not in jar_slug:
+                metadata_id, _ = self.metadata(jar)
+                metadata_id_lower = metadata_id.lower() if metadata_id else None
+                if metadata_id_lower != mod_id:
+                    continue
+            if asset_name and asset_name not in jar.name.lower():
+                _, metadata_version = self.metadata(jar)
+                if metadata_version != record.version:
+                    continue
+            matches.append(jar)
         return matches
 
     def current_version(self, record: ModRecord) -> str | None:
-        for jar in self.matching(record):
-            _, version = self.metadata(jar)
-            version = normalize_version(version)
-            if version:
-                return version
-        return record.version
+        matches = self.matching(record)
+        if not matches:
+            return None
 
-    def remove_matching(self, record: ModRecord, keep: Path) -> None:
-        for jar in self.matching(record):
-            if jar == keep:
-                continue
-            jar.unlink(missing_ok=True)
+        matched_versions = {self.metadata(jar)[1] for jar in matches}
+        non_null_versions = {version for version in matched_versions if version is not None}
+        if len(non_null_versions) == 1:
+            return next(iter(non_null_versions))
+        return record.version
 
 
 class ModManager:
@@ -302,61 +263,30 @@ class ModManager:
 
     def install_or_update(self, record: ModRecord) -> str | None:
         release = self.github.latest_release(record)
-        matches = self.jars.matching(record)
-        current_version = self.jars.current_version(record)
-
-        if matches and current_version == release.version:
-            record.version = release.version
-            self.fill_record_from_existing_jar(record, matches[0])
+        if record.version == release.version:
             return None
 
-        asset = self.select_asset(record, release)
+        asset = self.pick_asset(record, release)
         destination = self.instance.mods_dir / asset.name
         self.download_asset(asset, destination)
-
-        mod_id, jar_version = self.jars.metadata(destination)
-        record.mod_id = mod_id or record.mod_id or record.slug
-        record.asset_name = asset.name
-        record.version = normalize_version(jar_version) or release.version
-
-        self.jars.remove_matching(record, keep=destination)
+        record.version = release.version
         return release.version
 
-    def fill_record_from_existing_jar(self, record: ModRecord, jar: Path) -> None:
-        mod_id, _ = self.jars.metadata(jar)
-        record.mod_id = record.mod_id or mod_id
-        record.asset_name = record.asset_name or jar.name
+    def pick_asset(self, record: ModRecord, release: Release) -> ReleaseAsset:
+        for asset in release.assets:
+            lowered = asset.name.lower()
+            if not lowered.endswith(".jar"):
+                continue
+            if record.project.lower() in lowered or record.slug.lower() in lowered:
+                return asset
+            if any(token in lowered for token in LOADER_TOKENS[record.loader]):
+                return asset
 
-    def select_asset(self, record: ModRecord, release: Release) -> ReleaseAsset:
-        jars = [
-            asset
-            for asset in release.assets
-            if asset.name.lower().endswith(".jar")
-            and not any(token in asset.name.lower() for token in ("sources", "source", "javadoc"))
-        ]
-        if not jars:
-            raise AppError(f"No downloadable jar asset found for {record.repo}")
+        for asset in release.assets:
+            if asset.name.lower().endswith(".jar"):
+                return asset
 
-        loader_tokens = LOADER_TOKENS.get(self.instance.loader, (self.instance.loader,))
-        version_tokens = {
-            release.version,
-            self.instance.game_version,
-            f"mc{self.instance.game_version}",
-            f"minecraft{self.instance.game_version}",
-        }
-        project_tokens = {record.repo.lower(), record.slug.lower()}
-        if record.mod_id:
-            project_tokens.add(record.mod_id.lower())
-
-        def score(asset: ReleaseAsset) -> tuple[int, int, int]:
-            name = asset.name.lower()
-            return (
-                sum(1 for token in loader_tokens if token in name),
-                sum(1 for token in version_tokens if token and token.lower() in name),
-                sum(1 for token in project_tokens if token and token in name),
-            )
-
-        return max(jars, key=score)
+        raise AppError(f"No jar asset found for {record.repo} v{release.version}")
 
     def download_asset(self, asset: ReleaseAsset, destination: Path) -> None:
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -387,7 +317,7 @@ def instances_root() -> Path:
     override = os.environ.get(INSTANCE_ROOT_ENV)
     if override:
         return Path(override).expanduser()
-    return xdg_data_home() / "PrismLauncher" / "instances"
+    return xdg_data_home() / "PandoraLauncher" / "instances"
 
 
 def config_root() -> Path:
@@ -399,10 +329,6 @@ def config_root() -> Path:
 
 def profile_config_file(instance_dir: Path) -> Path:
     return config_root() / instance_dir.name / "config.json"
-
-
-def legacy_profile_config_file(instance_dir: Path) -> Path:
-    return xdg_config_home() / LEGACY_CONFIG_SUBDIR / instance_dir.name / "config.json"
 
 
 def read_json(path: Path) -> dict[str, object]:
@@ -429,34 +355,27 @@ def as_text(value: object | None) -> str | None:
 def normalize_version(value: str | None) -> str | None:
     if value is None:
         return None
-    value = value.strip()
-    if value[:1] in {"v", "V"} and len(value) > 1:
-        value = value[1:]
-    return value or None
+    version = value.strip()
+    if version.lower().startswith("v"):
+        version = version[1:]
+    return version or None
 
 
 def normalize_repo_spec(value: str) -> str:
-    value = value.strip()
-    if not value:
-        raise AppError("Empty GitHub repo spec")
-
-    if value.startswith(("http://", "https://")):
-        parsed = urllib.parse.urlparse(value)
-        if parsed.netloc not in {"github.com", "www.github.com"}:
-            raise AppError(f"Unsupported repository URL: {value}")
-        value = parsed.path.strip("/")
-    elif value.startswith("github.com/"):
-        value = value.removeprefix("github.com/")
-
-    value = value.split("?", 1)[0].split("#", 1)[0]
-    value = value.split("/releases", 1)[0]
-    value = value.removesuffix(".git")
-
-    parts = [part for part in value.split("/") if part]
-    if len(parts) < 2:
-        raise AppError(f"Invalid GitHub repo spec: {value}")
-
-    return f"{parts[0]}/{parts[1]}"
+    repo = value.strip()
+    if repo.startswith("https://github.com/"):
+        repo = repo.removeprefix("https://github.com/")
+    elif repo.startswith("http://github.com/"):
+        repo = repo.removeprefix("http://github.com/")
+    elif repo.startswith("github.com/"):
+        repo = repo.removeprefix("github.com/")
+    repo = repo.strip("/")
+    if repo.count("/") != 1:
+        raise AppError(f"Expected GitHub repository in owner/name form, got: {value}")
+    owner, name = repo.split("/", 1)
+    if not owner or not name:
+        raise AppError(f"Expected GitHub repository in owner/name form, got: {value}")
+    return f"{owner}/{name}"
 
 
 def load_mods_config(config_file: Path) -> list[ModRecord]:
@@ -465,24 +384,6 @@ def load_mods_config(config_file: Path) -> list[ModRecord]:
         raise AppError("Invalid config: mods must be a list")
 
     return [record for raw in raw_mods if (record := ModRecord.from_config(raw)) is not None]
-
-
-def load_legacy_mods(legacy_file: Path, output_dir: Path) -> list[ModRecord]:
-    profiles = read_json(legacy_file).get("profiles", [])
-    if not isinstance(profiles, list):
-        return []
-
-    for profile in profiles:
-        if not isinstance(profile, dict):
-            continue
-        if profile.get("output_dir") != str(output_dir):
-            continue
-        raw_mods = profile.get("mods", [])
-        if not isinstance(raw_mods, list):
-            return []
-        return [record for raw in raw_mods if (record := ModRecord.from_legacy(raw)) is not None]
-
-    return []
 
 
 @lru_cache(maxsize=1)
@@ -571,7 +472,7 @@ def resolve_instance(identifier: str) -> Path:
         suffix = "\nKnown instances:\n" + "\n".join(f"  - {name}" for name in known)
     else:
         suffix = ""
-    raise AppError(f"Unknown Prism instance: {identifier}{suffix}", 2)
+    raise AppError(f"Unknown Pandora instance: {identifier}{suffix}", 2)
 
 
 def read_instance(identifier: str) -> Instance:
@@ -581,7 +482,7 @@ def read_instance(identifier: str) -> Instance:
 
     parser = configparser.ConfigParser(interpolation=None)
     if not parser.read(cfg_path):
-        raise AppError(f"Unable to read Prism config: {cfg_path}")
+        raise AppError(f"Unable to read Pandora config: {cfg_path}")
 
     try:
         name = parser.get("General", "name")
@@ -591,13 +492,13 @@ def read_instance(identifier: str) -> Instance:
     try:
         pack = json.loads(pack_path.read_text())
     except FileNotFoundError as exc:
-        raise AppError(f"Missing Prism pack metadata: {pack_path}") from exc
+        raise AppError(f"Missing Pandora pack metadata: {pack_path}") from exc
     except json.JSONDecodeError as exc:
-        raise AppError(f"Invalid Prism pack metadata: {pack_path}") from exc
+        raise AppError(f"Invalid Pandora pack metadata: {pack_path}") from exc
 
     components = pack.get("components", [])
     if not isinstance(components, list):
-        raise AppError(f"Invalid Prism pack metadata: {pack_path}")
+        raise AppError(f"Invalid Pandora pack metadata: {pack_path}")
 
     game_version = next(
         (
@@ -627,7 +528,7 @@ def read_instance(identifier: str) -> Instance:
 def usage(argv0: str) -> None:
     command = Path(argv0).name
     print(
-        f"Usage: {command} <prism-instance> [list|add|remove|upgrade] ...\n"
+        f"Usage: {command} <pandora-instance> [list|add|remove|upgrade] ...\n"
         "Examples:\n"
         f"  {command} mob_life upgrade\n"
         f"  {command} mob_life add AttODao/mob_life",
@@ -715,12 +616,6 @@ def run(argv: list[str]) -> int:
     instance.mods_dir.mkdir(parents=True, exist_ok=True)
     profile = Profile.load(instance)
     manager = ModManager(instance, GitHubClient())
-
-    if profile.migrated:
-        print(
-            f"Imported GitHub release mod config from {legacy_profile_config_file(instance.directory)}",
-            file=sys.stderr,
-        )
 
     command = argv[2] if len(argv) > 2 else "list"
     args = argv[3:]

@@ -8,6 +8,7 @@ let
   mod = "SUPER";
   cursorTheme = "Yanfei-Cursors";
   cursorSize = "48";
+  systemctl = "${pkgs.systemd}/bin/systemctl";
   noctalia = cmd: "noctalia msg ${cmd}";
   screenshotDirectory =
     if hostName == "attodesk" then
@@ -140,6 +141,9 @@ in
         "$mod, Escape, exec, ${noctalia "panel-toggle session"}"
         "$mod, L, exec, ${noctalia "session lock"}"
 
+        # 録画
+        "$mod SHIFT, D, exec, ${noctalia "plugin noctalia/screen_recorder:service all toggle"}"
+
         # ウィンドウ操作
         "$mod, Q, killactive,"
         "$mod, F, fullscreen, 1"
@@ -164,6 +168,7 @@ in
         "$mod, mouse_up, workspace, e-1"
 
         # スクリーンショット
+        # Keep the frozen preview; hyprshot/grim still omits the cursor.
         "$mod SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m region -o ${screenshotDirectory}"
         "$mod ALT SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m window -o ${screenshotDirectory}"
         "$mod CTRL SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m output -o ${screenshotDirectory}"
@@ -199,6 +204,9 @@ in
       };
 
       exec-once = [
+        # Start the portal and fcitx5 before Noctalia so screencast and IME
+        # are ready as soon as the session appears.
+        "${systemctl} --user start fcitx5-daemon.service xdg-desktop-portal.service xdg-desktop-portal-gtk.service xdg-desktop-portal-hyprland.service"
         "uwsm app -t service -- noctalia"
         "uwsm app -t service -- foot --server"
       ];

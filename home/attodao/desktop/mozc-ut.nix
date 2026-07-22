@@ -72,25 +72,34 @@ in
       waylandFrontend = true;
       addons = with pkgs; [
         fcitx5-gtk
+        fcitx5-skk
         fcitx5MozcUt
         qt6Packages.fcitx5-configtool
       ];
+
+      settings.inputMethod = {
+        GroupOrder."0" = "Default";
+        "Groups/0" = {
+          "Name" = "Default";
+          "Default Layout" = "us";
+          "DefaultIM" = "skk";
+        };
+        "Groups/0/Items/0" = {
+          "Name" = "skk";
+          "Layout" = "us";
+        };
+        "Groups/0/Items/1" = {
+          "Name" = "keyboard-us";
+          "Layout" = "us";
+        };
+      };
     };
   };
 
-  # Start fcitx5 as a user service so app autostarts do not race it at session start.
-  systemd.user.services.fcitx5 = {
-    Unit = {
-      Description = "Fcitx5 input method";
-      After = [ "graphical-session.target" ];
-    };
-
-    Service = {
-      ExecStart = "${pkgs.fcitx5}/bin/fcitx5 -r";
-      Restart = "on-failure";
-      RestartSec = 3;
-    };
-
-    Install.WantedBy = [ "graphical-session.target" ];
-  };
+  # Home Manager generates an XDG autostart entry for fcitx5; disable it so the
+  # systemd user service is the only launcher.
+  xdg.configFile."autostart/org.fcitx.Fcitx5.desktop".text = ''
+    [Desktop Entry]
+    Hidden=true
+  '';
 }

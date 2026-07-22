@@ -50,6 +50,8 @@
     allowPasswordFallback = true;
   };
 
+  programs.gpu-screen-recorder.enable = true;
+
   # ※ インストール時の値から変更しないこと
   system.stateVersion = "26.05";
 }
