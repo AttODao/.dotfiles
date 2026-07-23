@@ -4,12 +4,6 @@
   pkgs,
   ...
 }:
-let
-  qmlImportPath = lib.makeSearchPath "lib/qt-6/qml" [
-    pkgs.qt6.qtdeclarative
-    pkgs.opencloud-desktop
-  ];
-in
 lib.mkIf (hostName == "attodesk")
 {
   home.packages = [
@@ -32,10 +26,6 @@ lib.mkIf (hostName == "attodesk")
 
     Service = {
       ExecStart = "${pkgs.opencloud-desktop}/bin/opencloud";
-      Environment = [
-        "NIXPKGS_QT6_QML_IMPORT_PATH=${qmlImportPath}"
-        "QML2_IMPORT_PATH=${qmlImportPath}"
-      ];
       Restart = "on-failure";
     };
 
