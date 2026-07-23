@@ -10,9 +10,10 @@ let
     version = "1.0";
     src = pkgs.fetchurl {
       name = "yanfei-cursors.zip";
-      url = "https://cloud.attodao.cc/public.php/dav/files/PadkpSHqECcxdDf/?accept=zip";
-      hash = "sha256-08r0SDIae49g1dQHvNFgYyvCUwcxD13wHGz3Grb1h8w=";
+      url = "https://cloud.attodao.cc/remote.php/dav/public-files/cqsQAfeTRsTMbmU/yanfei-cursors.zip";
+      hash = "sha256-l48eiQ3qqzhL6LMSneJ42PpKsWq2LaJHa5AR0g46bG0=";
     };
+    sourceRoot = ".";
     nativeBuildInputs = [
       pkgs.hyprcursor
       pkgs.unzip
@@ -26,7 +27,7 @@ let
 
       work="$TMPDIR/yanfei-cursors-build"
       mkdir -p "$work/yanfei-cursors"
-      cp -r ./* "$work/yanfei-cursors/"
+      cp -r cursors index.theme "$work/yanfei-cursors/"
       chmod -R u+w "$work/yanfei-cursors"
 
       hyprcursor-util --extract "$work/yanfei-cursors" >/dev/null

@@ -18,6 +18,25 @@ lib.mkIf (hostName == "attodesk")
     Hidden=true
   '';
 
+  # Some XDG autostart implementations also scan the leftover backup entry.
+  xdg.configFile."autostart/OpenCloud.desktop.backup" = {
+    force = true;
+    text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=OpenCloud Desktop
+      Hidden=true
+    '';
+  };
+
+  # The package ships an identical opencloudcmd.desktop launcher.
+  xdg.dataFile."applications/opencloudcmd.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=OpenCloud Desktop
+    Hidden=true
+  '';
+
   systemd.user.services.opencloud = {
     Unit = {
       Description = "OpenCloud desktop client";
