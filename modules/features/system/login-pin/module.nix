@@ -1,0 +1,104 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+let
+  cfg = config.attodao.loginPin;
+  allowedUsersJson = builtins.toJSON cfg.users;
+  allowedUsersShell = lib.concatStringsSep " " cfg.users;
+
+  checkLoginPin = pkgs.writeTextFile {
+    name = "check-login-pin";
+    destination = "/bin/check-login-pin";
+    executable = true;
+    text =
+      builtins.replaceStrings
+        [
+          "@PYTHON@"
+          ''["@ALLOWED_USERS@"]''
+        ]
+        [
+          "${pkgs.python3}/bin/python3"
+          allowedUsersJson
+        ]
+        (builtins.readFile ./check-login-pin.py);
+  };
+
+  setLoginPin = pkgs.writeShellApplication {
+    name = "set-login-pin";
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.python3
+    ];
+
+    text = builtins.replaceStrings [ "@ALLOWED_USERS@" ] [ allowedUsersShell ] (
+      builtins.readFile ./set-login-pin.sh
+    );
+  };
+
+  pinPamFor =
+    serviceName:
+    let
+      authRules = config.security.pam.services.${serviceName}.rules.auth;
+      authRuleName =
+        if authRules ? unix then
+          "unix"
+        else if authRules ? login then
+          "login"
+        else
+          throw "login-pin: '${serviceName}' has no unix or login PAM auth rule to precede";
+    in
+    {
+      unixAuth = cfg.allowPasswordFallback;
+
+      # greetd delegates to login, while direct services authenticate through pam_unix.
+      rules.auth.login-pin = {
+        order = authRules.${authRuleName}.order - 10;
+        control = "sufficient";
+        modulePath = "${config.security.pam.package}/lib/security/pam_exec.so";
+        args = [
+          "quiet"
+          "expose_authtok"
+          "${checkLoginPin}/bin/check-login-pin"
+        ];
+      };
+    };
+in
+{
+  options.attodao.loginPin = {
+    enable = lib.mkEnableOption "6-digit PIN authentication for selected PAM services";
+
+    users = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ "attodao" ];
+      description = "Users allowed to authenticate with a 6-digit PIN.";
+    };
+
+    services = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ "greetd" ];
+      description = "PAM service names where the PIN rule should be enabled.";
+    };
+
+    allowPasswordFallback = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Whether the normal Unix password remains valid if PIN authentication fails.";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    environment.systemPackages = [
+      setLoginPin
+    ];
+
+    system.activationScripts.loginPinDir = ''
+      install -d -m 0700 -o root -g root /etc/security/login-pin
+    '';
+
+    security.pam.services = lib.genAttrs cfg.services pinPamFor;
+  };
+}

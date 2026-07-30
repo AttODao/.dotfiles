@@ -1,4 +1,3 @@
-{ pkgs, ... }:
 {
   users.users.attodao = {
     isNormalUser = true;
@@ -11,6 +10,5 @@
       "uinput"
       "audio"
     ];
-    shell = pkgs.zsh;
   };
 }

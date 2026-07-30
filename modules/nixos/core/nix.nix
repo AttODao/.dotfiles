@@ -1,16 +1,19 @@
-{ inputs, pkgs, ... }:
 {
-  # フリーでないパッケージを許可
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
+{
   nixpkgs.config.allowUnfree = true;
 
-  # AAGL 用の substituter / trusted key など
-  nix.settings = inputs.aagl.nixConfig // {
+  nix.settings = {
     experimental-features = [
       "nix-command"
       "flakes"
     ];
 
-    trusted-users = [
+    trusted-users = lib.mkForce [
       "root"
       "@wheel"
     ];
@@ -20,6 +23,5 @@
     inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.home-manager
   ];
 
-  # Home Manager が既存ファイルと衝突した場合のバックアップ拡張子
   home-manager.backupFileExtension = "backup";
 }
