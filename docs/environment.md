@@ -50,7 +50,7 @@ Thunderbirdは`attodao@attodao.cc`のIMAP/SMTPと`atsuatat@gmail.com`のGmailア
 
 ## ログインPIN
 
-ReGreetとTTYログインでは6桁PIN認証を使えます。NixOS適用後に設定します。
+Noctalia GreeterとTTYログインでは6桁PIN認証を使えます。NixOS適用後に設定します。
 
 ```bash
 sudo set-login-pin attodao

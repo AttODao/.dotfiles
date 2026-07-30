@@ -18,15 +18,21 @@
     Install.WantedBy = [ "graphical-session.target" ];
   };
 
-  wayland.windowManager.hyprland.settings.windowrule = [
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, float on"
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, pin on"
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, move 0 0"
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, size 100% 100%"
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, border_size 0"
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, rounding 0"
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, no_anim on"
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, no_blur on"
-    "match:class ^menu\\.kando\\.Kando$, match:title ^Kando Menu$, opaque on"
+  wayland.windowManager.hyprland.settings.window_rule = [
+    {
+      match = {
+        class = "^menu\\.kando\\.Kando$";
+        title = "^Kando Menu$";
+      };
+      float = true;
+      pin = true;
+      move = "0 0";
+      size = "100% 100%";
+      border_size = 0;
+      rounding = 0;
+      no_anim = true;
+      no_blur = true;
+      opaque = true;
+    }
   ];
 }

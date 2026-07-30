@@ -38,7 +38,8 @@
         "mozcdic-ut-sudachidict": "mozcdic-ut-sudachidict",
         "nixpkgs": "nixpkgs",
         "noctalia": "noctalia",
-        "noctalia-community-palettes": "noctalia-community-palettes"
+        "noctalia-community-palettes": "noctalia-community-palettes",
+        "noctalia-greeter": "noctalia-greeter"
       },
       "locked": {
         "path": "./flake-inputs",
@@ -282,6 +283,27 @@
       "original": {
         "owner": "noctalia-dev",
         "repo": "community-palettes",
+        "type": "github"
+      }
+    },
+    "noctalia-greeter": {
+      "inputs": {
+        "nixpkgs": [
+          "deps",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785404119,
+        "narHash": "sha256-3t/+o8Cbve8z43IekUNBj7Ecn/T+v7+p4Ivgs3IEQtk=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
+        "rev": "257ce92ab410a1a9347038e4286a3fc5989bec97",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
         "type": "github"
       }
     },

@@ -1,6 +1,7 @@
 {
   config,
   hostName,
+  lib,
   pkgs,
   ...
 }:
@@ -11,6 +12,34 @@ let
   systemctl = "${pkgs.systemd}/bin/systemctl";
   noctalia = cmd: "noctalia msg ${cmd}";
   screenshotDirectory = "${config.xdg.userDirs.pictures}/Screenshots";
+  lua = lib.generators.mkLuaInline;
+
+  luaBind = keys: dispatcher: options: {
+    _args = [
+      (lua keys)
+      (lua dispatcher)
+    ]
+    ++ lib.optional (options != null) options;
+  };
+
+  modBind = key: dispatcher: luaBind ''mod .. " + ${key}"'' dispatcher null;
+  modCommand = key: command: modBind key "hl.dsp.exec_cmd(${builtins.toJSON command})";
+  lockedCommand =
+    key: command:
+    luaBind (builtins.toJSON key) "hl.dsp.exec_cmd(${builtins.toJSON command})" { locked = true; };
+
+  startupCommands = [
+    "${systemctl} --user start fcitx5-daemon.service xdg-desktop-portal.service xdg-desktop-portal-gtk.service xdg-desktop-portal-hyprland.service"
+    "uwsm app -t service -- noctalia"
+    "uwsm app -t service -- foot --server"
+  ];
+  startupHook = lua (
+    "function()\n"
+    + lib.concatMapStringsSep "\n" (
+      command: "  hl.exec_cmd(${builtins.toJSON command})"
+    ) startupCommands
+    + "\nend"
+  );
 in
 {
   home.packages = [
@@ -19,179 +48,314 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
-
-    # Force hyprlang because Home Manager otherwise follows Hyprland's generated config format.
-    configType = "hyprlang";
+    configType = "lua";
 
     systemd.enable = false;
     xwayland.enable = true;
 
     settings = {
-      "$mod" = mod;
+      mod._var = mod;
+
+      config = {
+        animations.enabled = true;
+
+        cursor = {
+          enable_hyprcursor = true;
+          no_hardware_cursors = true;
+        };
+
+        decoration = {
+          rounding = 10;
+          rounding_power = 2;
+          active_opacity = 1.0;
+          inactive_opacity = 0.96;
+          fullscreen_opacity = 1.0;
+
+          shadow = {
+            enabled = true;
+            range = 18;
+            render_power = 3;
+            color = "rgba(0b1010aa)";
+            color_inactive = "rgba(0b101066)";
+            offset = [
+              0
+              3
+            ];
+            scale = 0.98;
+          };
+
+          blur = {
+            enabled = true;
+            size = 8;
+            passes = 3;
+            noise = 0.0117;
+            contrast = 0.95;
+            brightness = 0.82;
+            vibrancy = 0.16;
+            new_optimizations = true;
+            ignore_opacity = true;
+            xray = false;
+          };
+        };
+
+        general = {
+          gaps_in = 4;
+          gaps_out = 8;
+          border_size = 2;
+          col = {
+            active_border = {
+              colors = [
+                "rgba(a7c080ee)"
+                "rgba(83c092ee)"
+              ];
+              angle = 45;
+            };
+            inactive_border = "rgba(3c4841aa)";
+          };
+          resize_on_border = true;
+        };
+
+        input = {
+          special_fallthrough = true;
+          focus_on_close = 1;
+        };
+
+        misc = {
+          disable_hyprland_logo = true;
+          disable_splash_rendering = true;
+          focus_on_activate = true;
+        };
+      };
 
       env = [
-        "ELECTRON_OZONE_PLATFORM_HINT,auto"
-        "XCURSOR_THEME,${cursorTheme}"
-        "XCURSOR_SIZE,${cursorSize}"
-        "HYPRCURSOR_THEME,${cursorTheme}"
-        "HYPRCURSOR_SIZE,${cursorSize}"
+        {
+          _args = [
+            "ELECTRON_OZONE_PLATFORM_HINT"
+            "auto"
+          ];
+        }
+        {
+          _args = [
+            "XCURSOR_THEME"
+            cursorTheme
+          ];
+        }
+        {
+          _args = [
+            "XCURSOR_SIZE"
+            cursorSize
+          ];
+        }
+        {
+          _args = [
+            "HYPRCURSOR_THEME"
+            cursorTheme
+          ];
+        }
+        {
+          _args = [
+            "HYPRCURSOR_SIZE"
+            cursorSize
+          ];
+        }
       ];
 
       monitor =
         if hostName == "attodesk" then
           [
-            "HDMI-A-2,1920x1080@100,0x0,1,bitdepth,10,cm,hdr"
-            "DP-1,2560x1440@143.999,1920x260,1,bitdepth,10,cm,hdr"
-            "HDMI-A-1,1920x1080@60,4480x394,1"
+            {
+              output = "HDMI-A-2";
+              mode = "1920x1080@100";
+              position = "0x0";
+              scale = 1;
+              bitdepth = 10;
+              cm = "hdr";
+            }
+            {
+              output = "DP-1";
+              mode = "2560x1440@143.999";
+              position = "1920x260";
+              scale = 1;
+              bitdepth = 10;
+              cm = "hdr";
+            }
+            {
+              output = "HDMI-A-1";
+              mode = "1920x1080@60";
+              position = "4480x394";
+              scale = 1;
+            }
           ]
         else
-          [ ",preferred,auto,1" ];
+          [
+            {
+              output = "";
+              mode = "preferred";
+              position = "auto";
+              scale = 1;
+            }
+          ];
 
-      general = {
-        gaps_in = 4;
-        gaps_out = 8;
-        border_size = 2;
-        "col.active_border" = "rgba(a7c080ee) rgba(83c092ee) 45deg";
-        "col.inactive_border" = "rgba(3c4841aa)";
-        resize_on_border = true;
-      };
+      curve = [
+        {
+          _args = [
+            "easeOutQuint"
+            {
+              type = "bezier";
+              points = [
+                [
+                  0.23
+                  1
+                ]
+                [
+                  0.32
+                  1
+                ]
+              ];
+            }
+          ];
+        }
+        {
+          _args = [
+            "easeInOutCubic"
+            {
+              type = "bezier";
+              points = [
+                [
+                  0.65
+                  0.05
+                ]
+                [
+                  0.36
+                  1
+                ]
+              ];
+            }
+          ];
+        }
+        {
+          _args = [
+            "linear"
+            {
+              type = "bezier";
+              points = [
+                [
+                  0
+                  0
+                ]
+                [
+                  1
+                  1
+                ]
+              ];
+            }
+          ];
+        }
+      ];
 
-      decoration = {
-        rounding = 10;
-        rounding_power = 2;
-        active_opacity = 1.0;
-        inactive_opacity = 0.96;
-        fullscreen_opacity = 1.0;
-
-        shadow = {
+      animation = [
+        {
+          leaf = "windows";
           enabled = true;
-          range = 18;
-          render_power = 3;
-          color = "rgba(0b1010aa)";
-          color_inactive = "rgba(0b101066)";
-          offset = "0 3";
-          scale = 0.98;
-        };
-
-        blur = {
+          speed = 4;
+          bezier = "easeOutQuint";
+          style = "popin 85%";
+        }
+        {
+          leaf = "windowsOut";
           enabled = true;
-          size = 8;
-          passes = 3;
-          noise = 0.0117;
-          contrast = 0.95;
-          brightness = 0.82;
-          vibrancy = 0.16;
-          new_optimizations = true;
-          ignore_opacity = true;
-          xray = false;
-        };
-      };
-
-      animations = {
-        enabled = true;
-        bezier = [
-          "easeOutQuint,0.23,1,0.32,1"
-          "easeInOutCubic,0.65,0.05,0.36,1"
-          "linear,0,0,1,1"
-        ];
-        animation = [
-          "windows,1,4,easeOutQuint,popin 85%"
-          "windowsOut,1,3,easeInOutCubic,popin 85%"
-          "border,1,5,easeOutQuint"
-          "fade,1,4,easeOutQuint"
-          "workspaces,1,4,easeOutQuint,slide"
-        ];
-      };
-
-      input = {
-        special_fallthrough = true;
-        focus_on_close = 1;
-      };
-
-      misc = {
-        disable_hyprland_logo = true;
-        disable_splash_rendering = true;
-        focus_on_activate = true;
-      };
+          speed = 3;
+          bezier = "easeInOutCubic";
+          style = "popin 85%";
+        }
+        {
+          leaf = "border";
+          enabled = true;
+          speed = 5;
+          bezier = "easeOutQuint";
+        }
+        {
+          leaf = "fade";
+          enabled = true;
+          speed = 4;
+          bezier = "easeOutQuint";
+        }
+        {
+          leaf = "workspaces";
+          enabled = true;
+          speed = 4;
+          bezier = "easeOutQuint";
+          style = "slide";
+        }
+      ];
 
       bind = [
-        "$mod, Return, exec, uwsm app -t service -- footclient"
-        "$mod, E, exec, uwsm app -t service -- pcmanfm"
+        (modCommand "Return" "uwsm app -t service -- footclient")
+        (modCommand "E" "uwsm app -t service -- pcmanfm")
 
-        "$mod, Space, exec, ${noctalia "panel-toggle launcher"}"
-        "$mod, S, exec, ${noctalia "panel-toggle control-center"}"
-        "$mod, Comma, exec, ${noctalia "settings-toggle"}"
+        (modCommand "Space" (noctalia "panel-toggle launcher"))
+        (modCommand "S" (noctalia "panel-toggle control-center"))
+        (modCommand "Comma" (noctalia "settings-toggle"))
 
-        "$mod, V, exec, ${noctalia "panel-toggle clipboard"}"
-        "$mod, Period, exec, ${noctalia "panel-toggle launcher /emo "}"
+        (modCommand "V" (noctalia "panel-toggle clipboard"))
+        (modCommand "Period" (noctalia "panel-toggle launcher /emo "))
 
-        "$mod, K, exec, ${noctalia "panel-toggle control-center calendar"}"
-        "$mod, M, exec, ${noctalia "panel-toggle control-center system"}"
+        (modCommand "K" (noctalia "panel-toggle control-center calendar"))
+        (modCommand "M" (noctalia "panel-toggle control-center system"))
 
-        "$mod, Escape, exec, ${noctalia "panel-toggle session"}"
-        "$mod, L, exec, ${noctalia "session lock"}"
+        (modCommand "Escape" (noctalia "panel-toggle session"))
+        (modCommand "L" (noctalia "session lock"))
 
-        "$mod SHIFT, D, exec, ${noctalia "plugin noctalia/screen_recorder:service all toggle"}"
+        (modCommand "SHIFT + D" (noctalia "plugin noctalia/screen_recorder:service all toggle"))
 
-        "$mod, Q, killactive,"
-        "$mod, F, fullscreen, 1"
-        "$mod SHIFT, F, fullscreen, 0"
-        "$mod, C, centerwindow,"
-        "$mod, R, togglefloating,"
+        (modBind "Q" "hl.dsp.window.close()")
+        (modBind "F" ''hl.dsp.window.fullscreen({ mode = "maximized" })'')
+        (modBind "SHIFT + F" ''hl.dsp.window.fullscreen({ mode = "fullscreen" })'')
+        (modBind "C" "hl.dsp.window.center()")
+        (modBind "R" ''hl.dsp.window.float({ action = "toggle" })'')
 
-        "$mod, Left, movefocus, l"
-        "$mod, Right, movefocus, r"
-        "$mod, Up, movefocus, u"
-        "$mod, Down, movefocus, d"
+        (modBind "Left" ''hl.dsp.focus({ direction = "left" })'')
+        (modBind "Right" ''hl.dsp.focus({ direction = "right" })'')
+        (modBind "Up" ''hl.dsp.focus({ direction = "up" })'')
+        (modBind "Down" ''hl.dsp.focus({ direction = "down" })'')
 
-        "$mod SHIFT, Left, movewindow, l"
-        "$mod SHIFT, Right, movewindow, r"
-        "$mod SHIFT, Up, movewindow, u"
-        "$mod SHIFT, Down, movewindow, d"
+        (modBind "SHIFT + Left" ''hl.dsp.window.move({ direction = "left" })'')
+        (modBind "SHIFT + Right" ''hl.dsp.window.move({ direction = "right" })'')
+        (modBind "SHIFT + Up" ''hl.dsp.window.move({ direction = "up" })'')
+        (modBind "SHIFT + Down" ''hl.dsp.window.move({ direction = "down" })'')
 
-        "$mod, mouse_down, workspace, e+1"
-        "$mod, mouse_up, workspace, e-1"
+        (modBind "mouse_down" ''hl.dsp.focus({ workspace = "e+1" })'')
+        (modBind "mouse_up" ''hl.dsp.focus({ workspace = "e-1" })'')
 
         # Keep the frozen preview; hyprshot/grim still omits the cursor.
-        "$mod SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m region -o ${screenshotDirectory}"
-        "$mod ALT SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m window -o ${screenshotDirectory}"
-        "$mod CTRL SHIFT, S, exec, uwsm app -t service -- hyprshot --freeze -m output -o ${screenshotDirectory}"
+        (modCommand "SHIFT + S" "uwsm app -t service -- hyprshot --freeze -m region -o ${screenshotDirectory}")
+        (modCommand "ALT + SHIFT + S" "uwsm app -t service -- hyprshot --freeze -m window -o ${screenshotDirectory}")
+        (modCommand "CTRL + SHIFT + S" "uwsm app -t service -- hyprshot --freeze -m output -o ${screenshotDirectory}")
 
-        "$mod SHIFT, R, exec, uwsm app -t service -- hyprctl reload"
-        "$mod SHIFT, E, exit,"
+        (modCommand "SHIFT + R" "hyprctl reload")
+        (modBind "SHIFT + E" "hl.dsp.exit()")
+
+        (lockedCommand "XF86AudioRaiseVolume" (noctalia "volume-up"))
+        (lockedCommand "XF86AudioLowerVolume" (noctalia "volume-down"))
+        (lockedCommand "XF86AudioMute" (noctalia "volume-mute"))
+        (lockedCommand "XF86AudioMicMute" (noctalia "microphone-mute"))
+        (lockedCommand "XF86MonBrightnessUp" (noctalia "brightness-up"))
+        (lockedCommand "XF86MonBrightnessDown" (noctalia "brightness-down"))
+
+        (lockedCommand "XF86AudioPlay" (noctalia "media toggle"))
+        (lockedCommand "XF86AudioNext" (noctalia "media next"))
+        (lockedCommand "XF86AudioPrev" (noctalia "media prev"))
+
+        (luaBind ''mod .. " + mouse:272"'' "hl.dsp.window.drag()" { mouse = true; })
+        (luaBind ''mod .. " + mouse:273"'' "hl.dsp.window.resize()" { mouse = true; })
       ];
 
-      bindl = [
-        ", XF86AudioRaiseVolume, exec, ${noctalia "volume-up"}"
-        ", XF86AudioLowerVolume, exec, ${noctalia "volume-down"}"
-        ", XF86AudioMute, exec, ${noctalia "volume-mute"}"
-        ", XF86AudioMicMute, exec, ${noctalia "microphone-mute"}"
-        ", XF86MonBrightnessUp, exec, ${noctalia "brightness-up"}"
-        ", XF86MonBrightnessDown, exec, ${noctalia "brightness-down"}"
-
-        ", XF86AudioPlay, exec, ${noctalia "media toggle"}"
-        ", XF86AudioNext, exec, ${noctalia "media next"}"
-        ", XF86AudioPrev, exec, ${noctalia "media previous"}"
-      ];
-
-      bindm = [
-        "$mod, mouse:272, movewindow"
-        "$mod, mouse:273, resizewindow"
-      ];
-
-      cursor = {
-        enable_hyprcursor = true;
-        no_hardware_cursors = true;
+      on = {
+        _args = [
+          "hyprland.start"
+          startupHook
+        ];
       };
-
-      exec-once = [
-        # Start the portal and fcitx5 before Noctalia so screencast and IME
-        # are ready as soon as the session appears.
-        "${systemctl} --user start fcitx5-daemon.service xdg-desktop-portal.service xdg-desktop-portal-gtk.service xdg-desktop-portal-hyprland.service"
-        "uwsm app -t service -- noctalia"
-        "uwsm app -t service -- foot --server"
-      ];
-
     };
   };
 }
