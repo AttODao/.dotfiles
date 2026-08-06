@@ -118,6 +118,16 @@ in
         input = {
           special_fallthrough = true;
           focus_on_close = 1;
+
+          touchpad = {
+            natural_scroll = true;
+          };
+        };
+
+        gestures = {
+          gesture = [
+            "3, horizontal, workspace"
+          ];
         };
 
         misc = {
@@ -326,6 +336,15 @@ in
 
         (modBind "mouse_down" ''hl.dsp.focus({ workspace = "e+1" })'')
         (modBind "mouse_up" ''hl.dsp.focus({ workspace = "e-1" })'')
+        (modCommand "1" "hyprctl dispatch workspace 1")
+        (modCommand "2" "hyprctl dispatch workspace 2")
+        (modCommand "3" "hyprctl dispatch workspace 3")
+        (modCommand "4" "hyprctl dispatch workspace 4")
+        (modCommand "5" "hyprctl dispatch workspace 5")
+        (modCommand "6" "hyprctl dispatch workspace 6")
+        (modCommand "7" "hyprctl dispatch workspace 7")
+        (modCommand "8" "hyprctl dispatch workspace 8")
+        (modCommand "9" "hyprctl dispatch workspace 9")
 
         # Keep the frozen preview; hyprshot/grim still omits the cursor.
         (modCommand "SHIFT + S" "uwsm app -t service -- hyprshot --freeze -m region -o ${screenshotDirectory}")

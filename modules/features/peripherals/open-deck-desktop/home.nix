@@ -7,6 +7,7 @@
 let
   openDeckAppImagePath = ".local/share/appimages/Open-Deck.AppImage";
   openDeckAppImageExec = "${config.home.homeDirectory}/${openDeckAppImagePath}";
+  openDeckAppImageCommand = "${pkgs.appimage-run}/bin/appimage-run ${openDeckAppImageExec}";
   openDeckIconPath = "${config.home.homeDirectory}/.local/share/icons/hicolor/512x512/apps/open_deck_desktop.png";
   # The user-owned AppImage cannot install Electron's setuid sandbox helper.
   openDeckDesktopEntry =
@@ -16,7 +17,7 @@ let
         "@OPEN_DECK_ICON@"
       ]
       [
-        openDeckAppImageExec
+        openDeckAppImageCommand
         openDeckIconPath
       ]
       (builtins.readFile ./open-deck-desktop.desktop);
