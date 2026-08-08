@@ -116,6 +116,7 @@ in
         };
 
         input = {
+          follow_mouse = 2;
           special_fallthrough = true;
           focus_on_close = 1;
 
