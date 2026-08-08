@@ -124,17 +124,17 @@ in
           };
         };
 
-        gestures = {
-          gesture = [
-            "3, horizontal, workspace"
-          ];
-        };
-
         misc = {
           disable_hyprland_logo = true;
           disable_splash_rendering = true;
           focus_on_activate = true;
         };
+      };
+
+      gesture = {
+        fingers = 3;
+        direction = "horizontal";
+        action = "workspace";
       };
 
       env = [
@@ -334,17 +334,26 @@ in
         (modBind "SHIFT + Up" ''hl.dsp.window.move({ direction = "up" })'')
         (modBind "SHIFT + Down" ''hl.dsp.window.move({ direction = "down" })'')
 
-        (modBind "mouse_down" ''hl.dsp.focus({ workspace = "e+1" })'')
-        (modBind "mouse_up" ''hl.dsp.focus({ workspace = "e-1" })'')
-        (modCommand "1" "hyprctl dispatch workspace 1")
-        (modCommand "2" "hyprctl dispatch workspace 2")
-        (modCommand "3" "hyprctl dispatch workspace 3")
-        (modCommand "4" "hyprctl dispatch workspace 4")
-        (modCommand "5" "hyprctl dispatch workspace 5")
-        (modCommand "6" "hyprctl dispatch workspace 6")
-        (modCommand "7" "hyprctl dispatch workspace 7")
-        (modCommand "8" "hyprctl dispatch workspace 8")
-        (modCommand "9" "hyprctl dispatch workspace 9")
+        (modBind "mouse_down" ''hl.dsp.focus({ workspace = "r+1" })'')
+        (modBind "mouse_up" ''hl.dsp.focus({ workspace = "r-1" })'')
+        (modBind "1" ''hl.dsp.focus({ workspace = 1 })'')
+        (modBind "2" ''hl.dsp.focus({ workspace = 2 })'')
+        (modBind "3" ''hl.dsp.focus({ workspace = 3 })'')
+        (modBind "4" ''hl.dsp.focus({ workspace = 4 })'')
+        (modBind "5" ''hl.dsp.focus({ workspace = 5 })'')
+        (modBind "6" ''hl.dsp.focus({ workspace = 6 })'')
+        (modBind "7" ''hl.dsp.focus({ workspace = 7 })'')
+        (modBind "8" ''hl.dsp.focus({ workspace = 8 })'')
+        (modBind "9" ''hl.dsp.focus({ workspace = 9 })'')
+        (modBind "SHIFT + 1" ''hl.dsp.window.move({ workspace = 1 })'')
+        (modBind "SHIFT + 2" ''hl.dsp.window.move({ workspace = 2 })'')
+        (modBind "SHIFT + 3" ''hl.dsp.window.move({ workspace = 3 })'')
+        (modBind "SHIFT + 4" ''hl.dsp.window.move({ workspace = 4 })'')
+        (modBind "SHIFT + 5" ''hl.dsp.window.move({ workspace = 5 })'')
+        (modBind "SHIFT + 6" ''hl.dsp.window.move({ workspace = 6 })'')
+        (modBind "SHIFT + 7" ''hl.dsp.window.move({ workspace = 7 })'')
+        (modBind "SHIFT + 8" ''hl.dsp.window.move({ workspace = 8 })'')
+        (modBind "SHIFT + 9" ''hl.dsp.window.move({ workspace = 9 })'')
 
         # Keep the frozen preview; hyprshot/grim still omits the cursor.
         (modCommand "SHIFT + S" "uwsm app -t service -- hyprshot --freeze -m region -o ${screenshotDirectory}")
