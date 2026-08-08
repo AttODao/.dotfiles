@@ -32,7 +32,7 @@ let
     "${systemctl} --user start fcitx5-daemon.service xdg-desktop-portal.service xdg-desktop-portal-gtk.service xdg-desktop-portal-hyprland.service"
     "uwsm app -t service -- noctalia"
     "uwsm app -t service -- foot --server"
-  ];
+  ] ++ lib.optional (hostName == "attolap") "uwsm app -t service -- neowall";
   startupHook = lua (
     "function()\n"
     + lib.concatMapStringsSep "\n" (
@@ -44,7 +44,16 @@ in
 {
   home.packages = [
     pkgs.hyprshot
-  ];
+  ] ++ lib.optional (hostName == "attolap") pkgs.neowall;
+
+  xdg.configFile = lib.mkIf (hostName == "attolap") {
+    "neowall/config.vibe".text = ''
+      default {
+        shader ${pkgs.neowall}/share/neowall/shaders/neonwave_sunrise.glsl
+        shader_speed 1.0
+      }
+    '';
+  };
 
   wayland.windowManager.hyprland = {
     enable = true;
