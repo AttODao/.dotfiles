@@ -44,7 +44,7 @@ let
       Port 22
       HostName git.attodao.cc
       User git
-      IdentityFile ~/.ssh/id_ed25519_forgejo
+      IdentityFile ~/.ssh/id_ed25519
       IdentitiesOnly yes
   '';
 
