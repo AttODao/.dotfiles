@@ -50,10 +50,11 @@ class Instance:
     name: str
     game_version: str
     loader: str
+    minecraft_subdir: str = "minecraft"
 
     @property
     def mods_dir(self) -> Path:
-        return self.directory / "minecraft" / "mods"
+        return self.directory / self.minecraft_subdir / "mods"
 
 
 @dataclass(slots=True)
@@ -472,17 +473,17 @@ def read_jar_metadata(jar_path: Path) -> tuple[str | None, str | None]:
 
 def resolve_instance(identifier: str) -> Path:
     path = Path(identifier).expanduser()
-    if path.is_dir() and (path / "instance.cfg").is_file():
+    if is_instance_directory(path):
         return path
 
     candidate = instances_root() / identifier
-    if candidate.is_dir() and (candidate / "instance.cfg").is_file():
+    if is_instance_directory(candidate):
         return candidate
 
     known = sorted(
         p.name
         for p in instances_root().iterdir()
-        if p.is_dir() and (p / "instance.cfg").is_file()
+        if is_instance_directory(p)
     ) if instances_root().is_dir() else []
 
     if known:
@@ -492,8 +493,23 @@ def resolve_instance(identifier: str) -> Path:
     raise AppError(f"Unknown Pandora instance: {identifier}{suffix}", 2)
 
 
+def is_instance_directory(path: Path) -> bool:
+    return path.is_dir() and any(
+        (path / marker).is_file() for marker in ("instance.cfg", "info_v1.json")
+    )
+
+
 def read_instance(identifier: str) -> Instance:
     instance_dir = resolve_instance(identifier)
+    cfg_path = instance_dir / "instance.cfg"
+
+    if not cfg_path.is_file():
+        return read_pandora_instance(instance_dir)
+
+    return read_legacy_instance(instance_dir)
+
+
+def read_legacy_instance(instance_dir: Path) -> Instance:
     cfg_path = instance_dir / "instance.cfg"
     pack_path = instance_dir / "mmc-pack.json"
 
@@ -540,6 +556,34 @@ def read_instance(identifier: str) -> Instance:
         raise AppError(f"Could not determine mod loader from {pack_path}")
 
     return Instance(instance_dir, name, game_version, loader)
+
+
+def read_pandora_instance(instance_dir: Path) -> Instance:
+    info_path = instance_dir / "info_v1.json"
+    info = read_json(info_path)
+
+    game_version = as_text(info.get("minecraft_version"))
+    if game_version is None:
+        raise AppError(f"Could not determine Minecraft version from {info_path}")
+
+    loader_value = as_text(info.get("loader"))
+    loader = normalize_loader(loader_value)
+    if loader is None:
+        if loader_value is None:
+            raise AppError(f"Could not determine mod loader from {info_path}")
+        raise AppError(f"Unsupported mod loader {loader_value!r} in {info_path}")
+
+    name = as_text(info.get("name")) or instance_dir.name
+    return Instance(instance_dir, name, game_version, loader, ".minecraft")
+
+
+def normalize_loader(value: str | None) -> str | None:
+    if value is None:
+        return None
+    loader = value.strip().lower().replace("_", "-")
+    if loader == "neoforge":
+        loader = "neo-forge"
+    return loader if loader in LOADER_TOKENS else None
 
 
 def usage(argv0: str) -> None:
