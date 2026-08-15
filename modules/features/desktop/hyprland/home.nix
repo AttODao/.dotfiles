@@ -11,6 +11,8 @@ let
   cursorSize = "48";
   systemctl = "${pkgs.systemd}/bin/systemctl";
   noctalia = cmd: "noctalia msg ${cmd}";
+  powerButtonCommand = "${noctalia "session lock"} && sleep 1 && ${noctalia "monitors off"}";
+  lidMonitorCommand = action: "sleep 1 && ${noctalia "monitors ${action}"}";
   screenshotDirectory = "${config.xdg.userDirs.pictures}/Screenshots";
   lua = lib.generators.mkLuaInline;
 
@@ -383,9 +385,14 @@ in
         (lockedCommand "XF86AudioPlay" (noctalia "media toggle"))
         (lockedCommand "XF86AudioNext" (noctalia "media next"))
         (lockedCommand "XF86AudioPrev" (noctalia "media prev"))
+        (lockedCommand "XF86PowerOff" powerButtonCommand)
 
         (luaBind ''mod .. " + mouse:272"'' "hl.dsp.window.drag()" { mouse = true; })
         (luaBind ''mod .. " + mouse:273"'' "hl.dsp.window.resize()" { mouse = true; })
+      ]
+      ++ lib.optionals (hostName == "attolap") [
+        (lockedCommand "switch:on:Lid Switch" (lidMonitorCommand "off"))
+        (lockedCommand "switch:off:Lid Switch" (lidMonitorCommand "on"))
       ];
 
       on = {
