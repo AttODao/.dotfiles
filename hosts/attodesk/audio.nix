@@ -28,6 +28,7 @@
           "node.description" = "KURO Loopback";
           "capture.props"."target.object" =
             "alsa_input.usb-KURO-CPC_KURO-CPC-4K1C1PTwA_33400041-02.analog-stereo";
+          "capture.props"."node.passive" = true;
           "playback.props"."audio.position" = [
             "FL"
             "FR"
