@@ -98,5 +98,5 @@ home-manager switch --flake .#attodao-attodesk
 - `system.stateVersion`と`home.stateVersion`: 内容を理解せず変更しません。
 - `/mnt/hdd1`と`/mnt/ssd1`: `attodesk`のストレージ前提です。
 - PAMとログインPIN: 誤りがログイン不能につながるため慎重に検証します。
-- Mail、CalDAV、SSH、Cloudflare設定: credentialを追加しません。
+- Mail、SSH、Cloudflare設定: credentialを追加しません。CalDAVとWireGuardは`docs/secrets.md`の手順でSOPS暗号化します。
 - `flake.lock`: Git管理対象です。input更新以外では`--no-write-lock-file`を使い、更新時は内容を確認してコミットします。

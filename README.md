@@ -13,6 +13,7 @@
 | `modules/features/<category>/<name>/` | ソフトウェアの導入先ホスト、設定、パッケージ、資産を管理します。 |
 | `modules/nixos/` | 全ホストで必須のNixOS基盤を管理します。 |
 | `home/attodao/default.nix` | ユーザー情報とHome Managerのstate versionを定義します。 |
+| `.sops.yaml` / `secrets/` | Age recipientとSOPS暗号化済みsecretを管理します。 |
 | `docs/` | 構成、運用、環境詳細、特殊実装の説明を置きます。 |
 
 ## 初期セットアップ
@@ -48,5 +49,6 @@ sudo nixos-rebuild switch --flake .#<host>
 - [NixOSモジュール](docs/nixos.md)
 - [Home Managerモジュール](docs/home-manager.md)
 - [環境と操作](docs/environment.md)
+- [secret管理](docs/secrets.md)
 - [特殊実装](docs/special-implementations.md)
 - [作業手順と検証](docs/workflow.md)

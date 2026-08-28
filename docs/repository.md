@@ -10,6 +10,7 @@
 - `home/attodao/default.nix`: ユーザー情報とHome Managerのstate versionを定義します。
 - `hosts/<host>/default.nix`: 生成済みhardware設定と実機固有の設定を読み込みます。
 - `modules/features/<category>/<name>/`: ソフトウェアの導入先ホスト、設定、パッケージ、依存関係、資産をまとめます。
+- `secrets/`: login PIN hash、Noctalia credential、WireGuard設定をSOPS暗号化済みの状態で置きます。
 
 `flake.nix`は同じfeature集合からNixOSとHome Managerを構成します。ホストとソフトウェアの対応表を別途作成しません。
 
@@ -79,3 +80,4 @@ featureは`modules/features/<category>/<name>/default.nix`に置きます。分�
 - `hostName`と`inputs`は`specialArgs`と`extraSpecialArgs`から渡されます。
 - `flake.lock`はGit管理対象です。input更新以外では`--no-write-lock-file`を使い、更新時は内容を確認してコミットします。
 - 新規にimportするファイルは、評価前にGitへ追加してください。flakeは未追跡ファイルを参照できません。
+- secretの平文とAge秘密鍵はGitへ追加しません。暗号化済みsecretだけを`secrets/`以下で管理します。

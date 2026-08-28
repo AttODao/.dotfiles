@@ -35,5 +35,5 @@ NixOS構成は`flake.nix`で次の3系統を組み合わせます。
 
 - `system.stateVersion = "26.05"`は明示的な依頼なしに変更しません。
 - `hardware-configuration.nix`は実機固有の生成物として扱い、整形や共通化をしません。
-- パスワード、token、PIN hash、秘密鍵はNixへ保存しません。
+- secretの平文とAge秘密鍵はNix storeやGitへ保存しません。SOPS暗号化済みのPIN hash、Noctalia password、WireGuard設定だけをGitで管理します。
 - マウント配下のsystem所有ディレクトリには`systemd.tmpfiles.rules`を優先します。

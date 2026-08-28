@@ -46,14 +46,18 @@ Hyprlandの主なキーバインドです。
 
 Thunderbirdは`attodao@attodao.cc`のIMAP/SMTPと`atsuatat@gmail.com`のGmailアカウントを定義します。Noctaliaは`https://mail.attodao.cc/radicale/`のCalDAVカレンダーを使います。
 
-パスワードはNix設定に保存しません。初回起動時にThunderbirdへ入力し、システムの資格情報ストアへ保存します。`mail.attodao.cc`を`192.168.0.100`へ解決するhosts設定は`attodesk`だけに適用されます。
+Thunderbirdのパスワードは初回起動時に入力し、システムの資格情報ストアへ保存します。NoctaliaのCalDAVパスワードは`attodesk`ではSOPS暗号化して管理し、`/run/secrets/noctalia/calendar-password`から読み込みます。`attolap`はAge鍵を用意するまで従来の資格情報ストアを使います。`mail.attodao.cc`を`192.168.0.100`へ解決するhosts設定は`attodesk`だけに適用されます。
+
+## WireGuard
+
+`attodesk`のWireGuard tunnelはSOPS暗号化して管理します。復号された設定はNetworkManagerの一時プロファイルとして登録され、自動接続しません。NoctaliaのNetworkパネルにあるVPN一覧から`WireGuard: <tunnel名>`を選択して接続・切断します。
 
 ## ログインPIN
 
-Noctalia GreeterとTTYログインでは6桁PIN認証を使えます。NixOS適用後に設定します。
+Noctalia GreeterとTTYログインでは6桁PIN認証を使えます。SOPSへの移行前はNixOS適用後に設定します。
 
 ```bash
 sudo set-login-pin attodao
 ```
 
-PIN hashは`/etc/security/login-pin/attodao.pbkdf2`へroot専用権限で保存されます。通常パスワードによるフォールバックも有効です。
+`attodesk`のPIN hashはSOPS暗号化して管理し、`/run/secrets/login-pin/attodao.pbkdf2`へroot専用権限で復号します。暗号化済みファイルがまだない場合と`attolap`では、従来どおり`/etc/security/login-pin/attodao.pbkdf2`を使います。通常パスワードによるフォールバックも有効です。

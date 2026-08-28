@@ -7,6 +7,8 @@
 - `hosts/attodesk/audio.nix`: Scarlett USBオーディオのunderrun回避と、KUROキャプチャーカード入力を物理出力へ自動再生しない仮想ステレオソース化を行います。
 - `modules/features/system/mozc-ut/home.nix`: upstreamがビルド中に取得する辞書をflake inputとnixpkgsの固定ソースへ置換し、Home Manager側の自動起動を抑制します。
 - `modules/features/system/login-pin/`: PINをプロセス引数に出さずfd経由でハッシュし、PAMでは共有認証トークンを`pam_unix`より先に消費します。`greetd`では`login`サブスタックより先へ配置します。
+- `modules/nixos/core/secrets.nix`: ホストのAge鍵でSOPS secretを復号し、login PINはroot専用、Noctalia passwordはユーザー専用のruntime fileとして公開します。未移行ホストは既存credentialを維持します。
+- `modules/features/networking/wireguard-client/`: ホスト別のSOPS暗号化済みWireGuard設定を列挙し、復号後だけNetworkManagerの一時プロファイルへ登録します。永続プロファイルと自動接続は作成せず、Noctaliaから接続先を選択します。
 - `modules/features/system/nix-ld/nixos.nix`: LWJGL/GLFW、OpenAL、Minecraft narratorが動的に要求するライブラリを個別に追加します。
 - `modules/features/desktop/hyprland/home.nix`: Home Managerの生成形式を強制し、カーソルを含まないスクリーンショットの制約と、IME・portalの起動順を明示します。
 - `modules/features/desktop/desktop-theme/home.nix`: Xcursor素材しか提供されないテーマからHyprcursorテーマを生成します。
