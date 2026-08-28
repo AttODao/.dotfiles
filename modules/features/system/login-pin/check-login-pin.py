@@ -21,7 +21,7 @@ pin = raw.split(b"\0", 1)[0].decode("utf-8", "ignore").strip()
 if not re.fullmatch(r"\d{6}", pin):
     sys.exit(1)
 
-path = Path("/etc/security/login-pin") / f"{user}.pbkdf2"
+path = Path("@PIN_HASH_DIRECTORY@") / f"{user}.pbkdf2"
 
 try:
     stored = path.read_text().strip()

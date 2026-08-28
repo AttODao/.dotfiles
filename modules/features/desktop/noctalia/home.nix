@@ -3,12 +3,22 @@
   hostName,
   inputs,
   lib,
+  osConfig ? null,
   pkgs,
   ...
 }:
 let
   recordingsDirectory = "${config.xdg.userDirs.videos}/Recordings";
-  osConfig = config.osConfig or null;
+  calendarPasswordFile =
+    if osConfig == null then
+      null
+    else
+      lib.attrByPath [
+        "sops"
+        "secrets"
+        "noctalia/calendar-password"
+        "path"
+      ] null osConfig;
   gpuScreenRecorder =
     if osConfig != null then
       osConfig.programs.gpu-screen-recorder.package
@@ -179,6 +189,10 @@ in
           server_url = "https://mail.attodao.cc/radicale/";
           username = "attodao@attodao.cc";
           calendars = [ ];
+        }
+        // lib.optionalAttrs (calendarPasswordFile != null) {
+          credential_source = "file";
+          password_file = calendarPasswordFile;
         };
       };
 

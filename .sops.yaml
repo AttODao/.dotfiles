@@ -1,0 +1,13 @@
+keys:
+  - &attodesk age1xgjuuz8g7sfx3ajh8u3jtnzghu8h33y5ayeszn37fmhl8rcw0d8qj0k98l
+
+creation_rules:
+  - path_regex: ^secrets/login-pin/attodesk/
+    age:
+      - *attodesk
+  - path_regex: ^secrets/wireguard-client/attodesk/
+    age:
+      - *attodesk
+  - path_regex: ^secrets/noctalia/
+    age:
+      - *attodesk

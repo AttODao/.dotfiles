@@ -9,6 +9,9 @@ let
   cfg = config.attodao.loginPin;
   allowedUsersJson = builtins.toJSON cfg.users;
   allowedUsersShell = lib.concatStringsSep " " cfg.users;
+  loginPinSecret = config.sops.secrets."login-pin/attodao.pbkdf2" or null;
+  loginPinHashDirectory =
+    if loginPinSecret == null then "/etc/security/login-pin" else builtins.dirOf loginPinSecret.path;
 
   checkLoginPin = pkgs.writeTextFile {
     name = "check-login-pin";
@@ -19,10 +22,12 @@ let
         [
           "@PYTHON@"
           ''["@ALLOWED_USERS@"]''
+          "@PIN_HASH_DIRECTORY@"
         ]
         [
           "${pkgs.python3}/bin/python3"
           allowedUsersJson
+          loginPinHashDirectory
         ]
         (builtins.readFile ./check-login-pin.py);
   };
@@ -91,13 +96,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [
-      setLoginPin
-    ];
+    environment.systemPackages = lib.optional (loginPinSecret == null) setLoginPin;
 
-    system.activationScripts.loginPinDir = ''
-      install -d -m 0700 -o root -g root /etc/security/login-pin
-    '';
+    system.activationScripts = lib.mkIf (loginPinSecret == null) {
+      loginPinDir = ''
+        install -d -m 0700 -o root -g root /etc/security/login-pin
+      '';
+    };
 
     security.pam.services = lib.genAttrs cfg.services pinPamFor;
   };
