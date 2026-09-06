@@ -1,10 +1,15 @@
 {
+  inputs,
   pkgs,
   ...
 }:
+let
+  opencloud =
+    inputs.opencloud-nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system}.opencloud-desktop;
+in
 {
   home.packages = [
-    pkgs.opencloud-desktop
+    opencloud
   ];
 
   xdg = {
@@ -41,7 +46,7 @@
     };
 
     Service = {
-      ExecStart = "${pkgs.opencloud-desktop}/bin/opencloud";
+      ExecStart = "${opencloud}/bin/opencloud";
       Restart = "on-failure";
     };
 
