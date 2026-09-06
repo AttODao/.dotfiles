@@ -1,3 +1,7 @@
+let
+  kuroSource = "alsa_input.usb-KURO-CPC_KURO-CPC-4K1C1PTwA_33400041-02.analog-stereo";
+  scarlettSink = "alsa_output.usb-Focusrite_Scarlett_Solo_4th_Gen_S1M5P213B255F6-00.HiFi__Line1__sink";
+in
 {
   services.pipewire = {
     wireplumber.extraConfig."20-scarlett-solo" = {
@@ -20,17 +24,15 @@
       ];
     };
 
-    # Expose the capture-card input as a virtual source instead of playing it on
-    # whichever physical sink WirePlumber currently selects.
+    # Expose the capture-card input as a virtual source for applications.
     extraConfig.pipewire."99-kuro-loopback"."context.modules" = [
       {
         name = "libpipewire-module-loopback";
         args = {
           "node.description" = "KURO Loopback";
           "capture.props" = {
-            "target.object" = "alsa_input.usb-KURO-CPC_KURO-CPC-4K1C1PTwA_33400041-02.analog-stereo";
+            "target.object" = kuroSource;
             "node.passive" = true;
-            "node.dont-reconnect" = true;
           };
           "playback.props" = {
             "node.name" = "kuro_capture";
@@ -39,6 +41,19 @@
               "FL"
               "FR"
             ];
+          };
+        };
+      }
+      {
+        name = "libpipewire-module-loopback";
+        args = {
+          "node.name" = "kuro_monitor";
+          "node.description" = "KURO Monitor";
+          "capture.props" = {
+            "target.object" = kuroSource;
+          };
+          "playback.props" = {
+            "target.object" = scarlettSink;
           };
         };
       }
