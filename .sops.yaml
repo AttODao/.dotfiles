@@ -1,13 +1,21 @@
 keys:
   - &attodesk age1xgjuuz8g7sfx3ajh8u3jtnzghu8h33y5ayeszn37fmhl8rcw0d8qj0k98l
+  - &attolap age1x9rk8uted32ldfs65mwy4lmhcvaqpq2agt0waz4qpxhd495dd3cq52kfrd
 
 creation_rules:
   - path_regex: ^secrets/login-pin/attodesk/
     age:
       - *attodesk
+  - path_regex: ^secrets/login-pin/attolap/
+    age:
+      - *attolap
   - path_regex: ^secrets/wireguard-client/attodesk/
     age:
       - *attodesk
+  - path_regex: ^secrets/wireguard-client/attolap/
+    age:
+      - *attolap
   - path_regex: ^secrets/noctalia/
     age:
       - *attodesk
+      - *attolap

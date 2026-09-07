@@ -1,4 +1,7 @@
 {
-  hosts = [ "attodesk" ];
+  hosts = [
+    "attodesk"
+    "attolap"
+  ];
   nixosModules = [ ./nixos.nix ];
 }

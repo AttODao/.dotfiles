@@ -14,7 +14,7 @@ secrets/wireguard-client/attodesk/<tunnel>.conf
 secrets/wireguard-client/attolap/<tunnel>.conf
 ```
 
-login PIN hashとWireGuard設定はホスト別、Noctalia passwordは両ホスト共通です。`attolap`用のAge鍵と同ホスト向けsecretは実機を操作できるようになるまで作成しません。
+login PIN hashとWireGuard設定はホスト別、Noctalia passwordは両ホスト共通です。
 
 復号時のパスと権限です。
 
@@ -33,10 +33,11 @@ login PIN hashとWireGuard設定はホスト別、Noctalia passwordは両ホス�
 /var/lib/sops-nix/key-attolap.txt
 ```
 
-`attodesk`の初期鍵は次のrecipientで`.sops.yaml`へ登録済みです。
+各ホストのrecipientは`.sops.yaml`へ登録済みです。
 
 ```text
-age1xgjuuz8g7sfx3ajh8u3jtnzghu8h33y5ayeszn37fmhl8rcw0d8qj0k98l
+attodesk: age1xgjuuz8g7sfx3ajh8u3jtnzghu8h33y5ayeszn37fmhl8rcw0d8qj0k98l
+attolap:  age1x9rk8uted32ldfs65mwy4lmhcvaqpq2agt0waz4qpxhd495dd3cq52kfrd
 ```
 
 初期導入用に生成した作業用鍵を正式な配置先へコピーし、recipientが一致することを確認します。sops-nixが作業用鍵を参照することはありません。
@@ -51,7 +52,19 @@ test "$(sudo "$age_keygen" -y /var/lib/sops-nix/key-attodesk.txt)" = \
   age1xgjuuz8g7sfx3ajh8u3jtnzghu8h33y5ayeszn37fmhl8rcw0d8qj0k98l
 ```
 
-`attodesk`鍵が現在唯一の復号手段なので、同じ秘密鍵をGit以外の安全な場所へバックアップします。正式パスとバックアップを確認してから、作業用鍵を`shred -u "$source_key"`で削除します。
+`attolap`では、生成済みの作業用鍵を次のように配置してrecipientを確認します。
+
+```bash
+age_keygen="$(nix build --no-link --print-out-paths nixpkgs#age)/bin/age-keygen"
+source_key=/home/attodao/.config/sops/age/key-attolap.txt
+
+sudo install -D -m 0600 -o root -g root \
+  "$source_key" /var/lib/sops-nix/key-attolap.txt
+test "$(sudo "$age_keygen" -y /var/lib/sops-nix/key-attolap.txt)" = \
+  age1x9rk8uted32ldfs65mwy4lmhcvaqpq2agt0waz4qpxhd495dd3cq52kfrd
+```
+
+各秘密鍵はGit以外の安全な場所へバックアップします。正式パスとバックアップを確認してから、作業用鍵を`shred -u "$source_key"`で削除します。
 
 ## 初期化
 
@@ -123,14 +136,19 @@ nix flake check --no-write-lock-file
 
 PIN hashが登録されると`set-login-pin`と従来の`/etc/security/login-pin`作成処理は無効になります。Noctalia passwordが登録されると、NixOS統合Home Managerだけが`credential_source = "file"`へ切り替わります。WireGuard設定が登録されると、NetworkManagerの一時プロファイルとしてNoctaliaに表示されます。
 
-## attolapの追加
+## attolapの有効化
 
-`attolap`を操作できるようになったら同ホスト上でAge鍵を生成し、`/var/lib/sops-nix/key-attolap.txt`へ配置します。公開鍵を`.sops.yaml`へ追加し、次を行います。
+`attolap`のrecipient、ホスト別secretの作成規則、sops-nixの鍵設定は登録済みです。上記の手順で作業用鍵を正式パスへ配置すると、`secrets/login-pin/attolap/`と`secrets/wireguard-client/attolap/`に追加したsecretを同ホストで復号できます。`attodesk`のPIN hashへ`attolap` recipientは追加しません。
 
-1. `secrets/login-pin/attolap/attodao.pbkdf2`と`secrets/wireguard-client/attolap/*.conf`を`attolap`鍵だけで暗号化します。
-2. `secrets/noctalia/calendar-password`へ`attolap` recipientを追加して`sops updatekeys`を実行します。
-3. `.sops.yaml`へ`secrets/wireguard-client/attolap/`の作成規則を追加します。
-4. `modules/nixos/core/secrets.nix`の有効ホストと`wireguard-client` featureの`hosts`を両ホストへ広げます。
-5. `attolap`のbuildと`nixos-rebuild test`でPIN、カレンダー、WireGuardを確認してからswitchします。
+既存のNoctalia passwordは現在`attodesk` recipientだけで暗号化されています。両ホストで共有するには、`attodesk`上でattolap recipientを追加します。
 
-`attodesk`のPIN hashへ`attolap` recipientは追加しません。
+```bash
+sops_bin="$(nix build --no-link --print-out-paths nixpkgs#sops)/bin/sops"
+sudo SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key-attodesk.txt \
+  "$sops_bin" updatekeys --input-type binary --yes \
+    secrets/noctalia/calendar-password
+sudo chown attodao:users secrets/noctalia/calendar-password
+chmod 0644 secrets/noctalia/calendar-password
+```
+
+更新したファイルを`attolap`へ反映した後、buildと`sudo nixos-rebuild test --flake .#attolap`でPIN、カレンダー、WireGuardを確認してからswitchします。

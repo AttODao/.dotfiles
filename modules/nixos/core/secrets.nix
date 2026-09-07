@@ -26,8 +26,7 @@ let
     };
 in
 {
-  # attolap keeps its existing credentials until its Age key can be provisioned.
-  sops = lib.mkIf (hostName == "attodesk") {
+  sops = {
     age = {
       keyFile = "/var/lib/sops-nix/key-${hostName}.txt";
       generateKey = false;
