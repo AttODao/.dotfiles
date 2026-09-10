@@ -23,22 +23,22 @@ let
     Host attobox
       User attodao
       Port 22
-      HostName attobox
+      HostName attobox.attodao.cc
 
     Host attofort
       User attodao
       Port 22
-      HostName attofort
+      HostName attofort.attodao.cc
 
     Host devcon
       User dev
       Port 22
-      HostName devcon
+      HostName dev.attodao.cc
 
     Host desktop
       User attodao
       Port 22
-      HostName desktop
+      HostName desk.attodao.cc
 
     Host git.attodao.cc
       Port 22

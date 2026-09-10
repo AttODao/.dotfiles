@@ -136,19 +136,21 @@ nix flake check --no-write-lock-file
 
 PIN hashが登録されると`set-login-pin`と従来の`/etc/security/login-pin`作成処理は無効になります。Noctalia passwordが登録されると、NixOS統合Home Managerだけが`credential_source = "file"`へ切り替わります。WireGuard設定が登録されると、NetworkManagerの一時プロファイルとしてNoctaliaに表示されます。
 
-## attolapの有効化
+## attolapのSOPS利用
 
-`attolap`のrecipient、ホスト別secretの作成規則、sops-nixの鍵設定は登録済みです。上記の手順で作業用鍵を正式パスへ配置すると、`secrets/login-pin/attolap/`と`secrets/wireguard-client/attolap/`に追加したsecretを同ホストで復号できます。`attodesk`のPIN hashへ`attolap` recipientは追加しません。
+`attolap`のrecipient、ホスト別secretの作成規則、sops-nixの鍵設定は登録済みです。Age秘密鍵は`/var/lib/sops-nix/key-attolap.txt`へ配置され、`attolap`のNixOS構成にも適用済みです。`secrets/login-pin/attolap/`と`secrets/wireguard-client/attolap/`のsecretを同ホストで復号できます。
 
-既存のNoctalia passwordは現在`attodesk` recipientだけで暗号化されています。両ホストで共有するには、`attodesk`上でattolap recipientを追加します。
+`secrets/noctalia/calendar-password`はattodeskとattolapの両recipientで暗号化済みです。両ホストとも`/run/secrets/noctalia/calendar-password`からNoctaliaへパスワードを渡します。PIN hashとWireGuard設定はホスト固有のsecretであり、それぞれ対応するホストのrecipientだけで暗号化します。
+
+recipientを変更するときは、既存の暗号化済みファイルを`updatekeys`で更新します。
 
 ```bash
 sops_bin="$(nix build --no-link --print-out-paths nixpkgs#sops)/bin/sops"
 sudo SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key-attodesk.txt \
-  "$sops_bin" updatekeys --input-type binary --yes \
+  "$sops_bin" --config .sops.yaml updatekeys --input-type binary --yes \
     secrets/noctalia/calendar-password
 sudo chown attodao:users secrets/noctalia/calendar-password
 chmod 0644 secrets/noctalia/calendar-password
 ```
 
-更新したファイルを`attolap`へ反映した後、buildと`sudo nixos-rebuild test --flake .#attolap`でPIN、カレンダー、WireGuardを確認してからswitchします。
+更新したファイルをGitで共有した後、両ホストでbuildまたは`sudo nixos-rebuild test --flake .#<host>`を実行してからswitchします。
