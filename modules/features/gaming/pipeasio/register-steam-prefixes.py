@@ -116,6 +116,8 @@ def prefix_is_registered(prefix: Path) -> bool:
             check=False,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
     except OSError as exc:
         eprint(f"pipeasio: could not query registry for {prefix}: {exc}")
