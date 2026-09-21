@@ -10,20 +10,19 @@ let
   wallpaperCommand =
     wallpaper:
     let
-      audio = lib.attrByPath [ "audio" ] { } wallpaper;
       extraOptions = lib.attrByPath [ "extraOptions" ] [ ] wallpaper;
       args = lib.escapeShellArgs (
         lib.cli.toCommandLineGNU { } {
           screen-root = wallpaper.monitor;
-          inherit (wallpaper) scaling fps;
-          silent = lib.attrByPath [ "silent" ] false audio;
-          noautomute = !(lib.attrByPath [ "automute" ] true audio);
-          no-audio-processing = !(lib.attrByPath [ "processing" ] true audio);
+          inherit (wallpaper) scaling;
+          silent = cfg.audio.silent;
+          noautomute = !cfg.audio.automute;
+          no-audio-processing = !cfg.audio.processing;
         }
         ++ extraOptions
         ++ [
           "--bg"
-          wallpaper.wallpaperId
+          wallpaper.wallpaper
         ]
       );
     in
@@ -47,28 +46,26 @@ in
     package = pkgs.linux-wallpaperengine;
 
     assetsPath = "${config.home.homeDirectory}/.local/share/Steam/steamapps/common/wallpaper_engine/assets";
+    audio = {
+      silent = true;
+      processing = false;
+    };
 
     wallpapers = [
       {
         monitor = "HDMI-A-2";
-        wallpaperId = "2270407932";
+        wallpaper = "2270407932";
         scaling = "fill";
-        audio.silent = true;
-        audio.processing = false;
       }
       {
         monitor = "DP-1";
-        wallpaperId = "2540151267";
+        wallpaper = "2540151267";
         scaling = "fill";
-        audio.silent = true;
-        audio.processing = false;
       }
       {
         monitor = "HDMI-A-1";
-        wallpaperId = "1810612745";
+        wallpaper = "1810612745";
         scaling = "fill";
-        audio.silent = true;
-        audio.processing = false;
       }
     ];
   };

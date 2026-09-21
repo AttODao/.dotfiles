@@ -7,7 +7,7 @@
     "app2unit"
     "desktop-theme"
     "foot"
-    "mozc-ut"
+    "skk"
     "noctalia"
     "pcmanfm"
   ];

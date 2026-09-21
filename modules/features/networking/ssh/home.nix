@@ -21,24 +21,28 @@ let
       ServerAliveCountMax 3
 
     Host attobox
-      User attodao
       Port 22
       HostName attobox.attodao.cc
+      User attodao
+      IdentityFile ~/.ssh/id_ed25519
 
     Host attofort
-      User attodao
       Port 22
       HostName attofort.attodao.cc
+      User attodao
+      IdentityFile ~/.ssh/id_ed25519
 
     Host devcon
-      User dev
       Port 22
       HostName dev.attodao.cc
+      User dev
+      IdentityFile ~/.ssh/id_ed25519
 
     Host desktop
-      User attodao
       Port 22
       HostName desk.attodao.cc
+      User attodao
+      IdentityFile ~/.ssh/id_ed25519
 
     Host git.attodao.cc
       Port 22

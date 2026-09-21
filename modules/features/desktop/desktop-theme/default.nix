@@ -4,7 +4,7 @@
     "attolap"
   ];
   requires = [
-    "mozc-ut"
+    "skk"
     "qt6ct"
   ];
   homeModules = [ ./home.nix ];

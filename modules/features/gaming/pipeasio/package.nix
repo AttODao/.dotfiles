@@ -6,6 +6,7 @@
   lib,
   makeWrapper,
   ninja,
+  pkgs,
   pipewire,
   pkg-config,
   qt6,
@@ -14,19 +15,20 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "pipeasio";
-  version = "1.2.0";
+  version = "1.7.0";
 
   src = fetchFromGitHub {
     owner = "M0n7y5";
     repo = "pipeasio";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-iq6xfRi0qc8tBPRP/vfpCBbysIba12ABGTqsEfhkyUE=";
+    hash = "sha256-L7EkqebKAgVtTWFDOH3b0emFE/3Esex8T0xtbOXjNgE=";
   };
 
   nativeBuildInputs = [
     cmake
     makeWrapper
     ninja
+    pkgs.pkgsCross.mingwW64.stdenv.cc
     pkg-config
     qt6.wrapQtAppsHook
     wineWow64Packages.stable
@@ -42,8 +44,10 @@ stdenv.mkDerivation (finalAttrs: {
   cmakeFlags = [
     "-DBUILD_SETTINGS_PANEL=ON"
     "-DBUILD_TESTS=OFF"
+    "-DBUILD_ARM64=OFF"
     "-DWINE_INCLUDE_DIRS=${
       lib.concatStringsSep ";" [
+        "${wineWow64Packages.stable}/include"
         "${wineWow64Packages.stable}/include/wine"
         "${wineWow64Packages.stable}/include/wine/windows"
       ]

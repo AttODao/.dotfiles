@@ -3,6 +3,6 @@
     "attodesk"
     "attolap"
   ];
-  requires = [ "mozc-ut" ];
+  requires = [ "skk" ];
   homeModules = [ ./home.nix ];
 }
