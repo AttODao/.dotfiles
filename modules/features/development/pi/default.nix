@@ -3,5 +3,5 @@
     "attodesk"
     "attolap"
   ];
-  systemPackages = pkgs: [ pkgs.codex ];
+  homeModules = [ ./home.nix ];
 }
