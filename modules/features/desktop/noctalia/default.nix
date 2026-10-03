@@ -11,7 +11,7 @@
     "pcmanfm"
     "quickshell"
     "thunderbird"
-    "zed"
+    "vscode"
   ];
   nixosModules = [ ./nixos.nix ];
   homeModules = [ ./home.nix ];

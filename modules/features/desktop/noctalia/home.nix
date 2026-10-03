@@ -154,7 +154,7 @@ in
         pinned = [
           "footclient"
           "pcmanfm"
-          "dev.zed.Zed"
+          "code"
           "floorp"
           "thunderbird"
           "discord"
