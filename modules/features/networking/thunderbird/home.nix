@@ -24,6 +24,7 @@ in
       ];
       settings = {
         "extensions.autoDisableScopes" = 0;
+        "mail.shell.checkDefaultClient" = false;
         "mail.spellcheck.inline" = true;
         "mailnews.start_page.enabled" = false;
       };
